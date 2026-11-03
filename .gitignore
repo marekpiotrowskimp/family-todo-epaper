@@ -1,0 +1,11 @@
+.pio/
+.vscode/
+include/secrets.h
+include/family_key.h
+ios/FamilyTodo/FamilyKey.swift
+
+# sekrety / system
+.DS_Store
+.env
+secrets.h
+secrets.py

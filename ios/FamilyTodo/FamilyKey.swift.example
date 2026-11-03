@@ -1,0 +1,7 @@
+// Wygeneruj prawdziwy klucz: tools/make-family-key.sh (tworzy ten plik jako FamilyKey.swift
+// oraz include/family_key.h z tym samym kluczem). FamilyKey.swift nie trafia do gita.
+import Foundation
+
+enum FamilyKey {
+    static let secret = Data(repeating: 0, count: 32)
+}
