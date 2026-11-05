@@ -114,6 +114,53 @@ void test_nine_owners_fit_on_single_page() {
   TEST_ASSERT_EQUAL_UINT(1, p.pageCount);
 }
 
+// --- Wyśrodkowanie listy w pionie (ekran 300 px, wiersz 33 px) ---
+
+void test_screen_geometry_constants() {
+  TEST_ASSERT_EQUAL_INT(300, todo::kScreenHeight);
+  TEST_ASSERT_EQUAL_INT(33, todo::kRowHeight);
+  TEST_ASSERT_EQUAL_INT(16, todo::kPageLabelHeight);
+}
+
+void test_single_row_is_centered_vertically() {
+  TEST_ASSERT_EQUAL_INT(133, todo::listTop(1));  // (300 - 33) / 2; środek wiersza 149,5
+  TEST_ASSERT_EQUAL_INT(133, todo::rowTop(0, 1));
+}
+
+void test_list_top_for_each_row_count() {
+  const int expected[] = {150, 133, 117, 100, 84, 67, 51, 34, 18, 1};  // (300 - n·33) / 2
+  for (size_t n = 0; n <= todo::kScreenRows; n++) TEST_ASSERT_EQUAL_INT_MESSAGE(expected[n], todo::listTop(n), "listTop(n)");
+}
+
+void test_space_above_and_below_differs_by_at_most_one_pixel() {
+  for (size_t n = 1; n <= todo::kScreenRows; n++) {
+    int above = todo::listTop(n);
+    int below = todo::kScreenHeight - (todo::rowTop(n - 1, n) + todo::kRowHeight);
+    TEST_ASSERT_TRUE_MESSAGE(below - above == 0 || below - above == 1, "symetria");
+  }
+}
+
+void test_rows_follow_each_other_without_gaps() {
+  TEST_ASSERT_EQUAL_INT(67, todo::rowTop(0, 5));
+  TEST_ASSERT_EQUAL_INT(100, todo::rowTop(1, 5));
+  TEST_ASSERT_EQUAL_INT(199, todo::rowTop(4, 5));
+  TEST_ASSERT_EQUAL_INT(1, todo::rowTop(0, 9));
+  TEST_ASSERT_EQUAL_INT(265, todo::rowTop(8, 9));  // dół 298, mieści się w 300
+}
+
+void test_more_rows_than_screen_is_treated_as_full_screen() {
+  TEST_ASSERT_EQUAL_INT(1, todo::listTop(12));
+  TEST_ASSERT_EQUAL_INT(1, todo::rowTop(0, 12));
+}
+
+void test_only_row_overlapping_bottom_strip_reserves_page_label() {
+  TEST_ASSERT_TRUE(todo::rowReservesPageLabel(8, 9));   // dół 298 > 284
+  TEST_ASSERT_FALSE(todo::rowReservesPageLabel(7, 9));  // dół 265
+  TEST_ASSERT_FALSE(todo::rowReservesPageLabel(7, 8));  // 8 wierszy: dół 282 <= 284
+  TEST_ASSERT_FALSE(todo::rowReservesPageLabel(0, 1));  // pojedynczy wiersz na środku
+  TEST_ASSERT_FALSE(todo::rowReservesPageLabel(2, 3));
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_global_order_priority_then_due_then_created_then_id);
@@ -125,5 +172,12 @@ int main() {
   RUN_TEST(test_empty_list_gives_single_empty_page);
   RUN_TEST(test_screen_has_nine_rows_without_header);
   RUN_TEST(test_nine_owners_fit_on_single_page);
+  RUN_TEST(test_screen_geometry_constants);
+  RUN_TEST(test_single_row_is_centered_vertically);
+  RUN_TEST(test_list_top_for_each_row_count);
+  RUN_TEST(test_space_above_and_below_differs_by_at_most_one_pixel);
+  RUN_TEST(test_rows_follow_each_other_without_gaps);
+  RUN_TEST(test_more_rows_than_screen_is_treated_as_full_screen);
+  RUN_TEST(test_only_row_overlapping_bottom_strip_reserves_page_label);
   return UNITY_END();
 }

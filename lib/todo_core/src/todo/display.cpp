@@ -14,6 +14,17 @@ bool displayBefore(const Task& a, const Task& b) {
   return a.id < b.id;
 }
 
+int listTop(size_t rowCount) {
+  int n = (int)std::min(rowCount, kScreenRows);
+  return (kScreenHeight - n * kRowHeight) / 2;
+}
+
+int rowTop(size_t index, size_t rowCount) { return listTop(rowCount) + (int)index * kRowHeight; }
+
+bool rowReservesPageLabel(size_t index, size_t rowCount) {
+  return rowTop(index, rowCount) + kRowHeight > kScreenHeight - kPageLabelHeight;
+}
+
 DisplayPage selectForDisplay(const std::vector<Task>& tasks, size_t rows, size_t page) {
   std::vector<Task> active;
   for (auto& t : tasks)

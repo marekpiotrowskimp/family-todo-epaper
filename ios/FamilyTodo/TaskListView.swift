@@ -6,9 +6,6 @@ struct TaskListView: View {
     @State private var editing: TodoTask?
     @State private var isAdding = false
 
-    private var active: [TodoTask] { model.tasks.filter { $0.status == .active } }
-    private var done: [TodoTask] { model.tasks.filter { $0.status == .done } }
-
     var body: some View {
         NavigationStack {
             List {
@@ -17,12 +14,8 @@ struct TaskListView: View {
                         .foregroundStyle(Theme.inkSecondary)
                         .listRowBackground(Color.clear)
                 }
-                if !active.isEmpty {
-                    Section { ForEach(active, id: \.id, content: row) } header: { SectionHeader("Do zrobienia") }
-                        .surfaceRow()
-                }
-                if !done.isEmpty {
-                    Section { ForEach(done, id: \.id, content: row) } header: { SectionHeader("Zrobione") }
+                if !model.tasks.isEmpty {
+                    Section { ForEach(model.tasks, id: \.id, content: row) } header: { SectionHeader("Do zrobienia") }
                         .surfaceRow()
                 }
                 if let message = model.message {
@@ -43,6 +36,13 @@ struct TaskListView: View {
                             Label("Synchronizuj", systemImage: "arrow.triangle.2.circlepath")
                         }
                         .badge(model.pendingCount)
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        HistoryView(model: model)
+                    } label: {
+                        Label("Historia", systemImage: "clock.arrow.circlepath")
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -68,8 +68,7 @@ struct TaskListView: View {
                 PriorityMark(priority: task.priority)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(task.title)
-                        .strikethrough(task.status == .done)
-                        .foregroundStyle(task.status == .done ? Theme.inkSecondary : Theme.ink)
+                        .foregroundStyle(Theme.ink)
                     HStack(spacing: 8) {
                         if !model.isMine(task) { Text("od innego domownika") }
                         if let due = task.dueAt { Text(due, format: .dateTime.day().month()) }
@@ -81,11 +80,7 @@ struct TaskListView: View {
             }
         }
         .swipeActions(edge: .leading) {
-            if task.status == .active {
-                Button("Zrobione") { model.complete(task) }.tint(Theme.actionComplete)
-            } else {
-                Button("Przywróć") { model.reopen(task) }.tint(Theme.actionRestore)
-            }
+            Button("Zrobione") { model.complete(task) }.tint(Theme.actionComplete)
         }
         .swipeActions(edge: .trailing) {
             Button("Usuń", role: .destructive) { model.delete(task) }.tint(Theme.actionDelete)

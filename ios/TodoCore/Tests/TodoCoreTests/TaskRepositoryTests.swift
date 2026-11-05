@@ -197,4 +197,23 @@ import Testing
         try Data("śmieci".utf8).write(to: url)
         #expect(throws: (any Error).self) { try makeRepo(storage: FileTaskStorage(url: url)) }
     }
+
+    /// Charakteryzacja: plik zapisany przez obecną wersję aplikacji (bez czasów wykonania) nadal się wczytuje.
+    @Test func fileFromCurrentAppVersionStillLoads() throws {
+        let url = temporaryFileURL()
+        let legacy = """
+            {"tasks":[{"id":"a","ownerId":"anna","title":"Stare","priority":1,"status":"done",\
+            "createdAt":-978307199,"updatedAt":-978307195,"updatedBy":"anna","deleted":false},\
+            {"id":"b","ownerId":"bartek","title":"Nowe","priority":2,"status":"active",\
+            "createdAt":-978307199,"updatedAt":-978307199,"updatedBy":"bartek","deleted":false}],\
+            "pendingIDs":["b"],"cursor":{"storeId":"S1","revision":7}}
+            """
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data(legacy.utf8).write(to: url)
+        let repo = try makeRepo(storage: FileTaskStorage(url: url))
+        #expect(repo.visibleTasks.map(\.id) == ["b", "a"])
+        #expect(repo.task(id: "a")?.updatedAt == ms(5000))
+        #expect(repo.pendingIDs == ["b"])
+        #expect(repo.syncCursor == SyncCursor(storeId: "S1", revision: 7))
+    }
 }

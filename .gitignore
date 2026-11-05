@@ -9,3 +9,8 @@ ios/FamilyTodo/FamilyKey.swift
 .env
 secrets.h
 secrets.py
+
+# SwiftPM build artifacts / Xcode index
+ios/TodoCore/.build/
+# vim swap files
+*.swp

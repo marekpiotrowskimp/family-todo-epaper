@@ -1,7 +1,7 @@
 // Lista zadań rodziny na e-paperze 400x300 (README sekcja 5), bez nagłówka.
 //
 //   0 ┌──────────────────────────────────────┐
-//     │ ⚑ Anna: Kupić mleko            31.10 │  9 wierszy po 33 px
+//     │ ⚑ Anna: Kupić mleko            31.10 │  do 9 wierszy po 33 px, wyśrodkowanych w pionie
 //     │ ⚐ Bartek: Wynieść śmieci             │  ⚑ wysoki, ⚐ normalny, — niski (todo::priorityIcon)
 //     │ …                                    │
 //     │ Pranie                          1/2  │  numer strony w rogu tylko przy rotacji
@@ -15,7 +15,10 @@
 #include <U8g2_for_Adafruit_GFX.h>
 #include <time.h>
 
+#include <algorithm>
+
 #include "config.h"
+#include "todo/display.h"
 #include "todo/priority_icon.h"
 
 // DEPG0420BNS19AF: 400x300, SSD1683. Tylko pełne odświeżanie (README sekcja 6).
@@ -34,8 +37,8 @@ class Panel : public GxEPD2_420_GDEY042T81 {
 static GxEPD2_BW<Panel, Panel::HEIGHT> display(Panel(EPD_CS, EPD_DC, EPD_RST, EPD_BUSY));
 static U8G2_FOR_ADAFRUIT_GFX u8g2;
 
-static const int16_t W = 400, H = 300, MARGIN = 14;
-static const int16_t ROW_H = 33;
+static const int16_t W = 400, H = todo::kScreenHeight, MARGIN = 14;
+static const int16_t ROW_H = todo::kRowHeight;
 static const int16_t ICON_X = MARGIN, TEXT_X = MARGIN + todo::kPriorityIconSize + 6;
 
 // Skraca tekst UTF-8 (po pełnych znakach), aż zmieści się w max_w razem z „…”.
@@ -104,15 +107,15 @@ void screenDraw(const ScreenState& s) {
     display.fillScreen(GxEPD_WHITE);
     char page[16] = "";
     int16_t pageW = pageLabelWidth(s, page, sizeof(page));
-    size_t slots = H / ROW_H;
+    size_t count = std::min(s.rows.size(), todo::kScreenRows);
     if (s.rows.empty()) {
       u8g2.setFont(u8g2_font_helvB14_te);
       const char* msg = "Brak zadań";
       u8g2.drawUTF8((W - u8g2.getUTF8Width(msg)) / 2, H / 2, msg);
     }
-    for (size_t i = 0; i < s.rows.size() && i < slots; i++) {
-      bool last = i + 1 == slots;
-      drawRow(s.rows[i], (int16_t)i * ROW_H, W - MARGIN - (last ? pageW : 0));
+    for (size_t i = 0; i < count; i++) {
+      bool reserve = todo::rowReservesPageLabel(i, count);
+      drawRow(s.rows[i], (int16_t)todo::rowTop(i, count), W - MARGIN - (reserve ? pageW : 0));
     }
     if (pageW > 0) {
       u8g2.setFont(u8g2_font_helvR10_te);

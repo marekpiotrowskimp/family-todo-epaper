@@ -15,6 +15,8 @@ struct TaskEditorView: View {
     @State private var due: Date
     @State private var hasReminder: Bool
     @State private var reminder: Date
+    /// Rozwinięty panel daty (kalendarz albo koło godzin) — najwyżej jeden, w treści formularza.
+    @State private var panels = EditorPanels()
 
     init(task: TodoTask?, onSave: @escaping Save) {
         self.task = task
@@ -55,14 +57,23 @@ struct TaskEditorView: View {
                 Section {
                     Toggle(isOn: $hasDue) { Text("Termin").foregroundStyle(Theme.ink) }
                     if hasDue {
-                        DatePicker(selection: $due, displayedComponents: .date) { Text("Data").foregroundStyle(Theme.ink) }
+                        panelRow("Dzień", value: Self.dayText(due), panel: .dueDay)
+                        if panels.open == .dueDay { calendar(for: $due, field: .due) }
                     }
                 }
                 .surfaceRow()
                 Section {
                     Toggle(isOn: $hasReminder) { Text("Przypomnienie").foregroundStyle(Theme.ink) }
                     if hasReminder {
-                        DatePicker(selection: $reminder) { Text("Kiedy").foregroundStyle(Theme.ink) }
+                        panelRow("Dzień", value: Self.dayText(reminder), panel: .reminderDay)
+                        if panels.open == .reminderDay { calendar(for: $reminder, field: .reminder) }
+                        panelRow("Godzina", value: reminder.formatted(date: .omitted, time: .shortened), panel: .reminderTime)
+                        if panels.open == .reminderTime {
+                            DatePicker("Godzina przypomnienia", selection: reminderTime, displayedComponents: .hourAndMinute)
+                                .datePickerStyle(.wheel)
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 } footer: {
                     Text("Przypomnienie przychodzi na ten telefon, także bez połączenia z wyświetlaczem.")
@@ -71,6 +82,12 @@ struct TaskEditorView: View {
                 .surfaceRow()
             }
             .paperScreen()
+            .onChange(of: hasDue) { _, on in
+                withAnimation { on ? panels.enabled(.due) : panels.disabled(.due) }
+            }
+            .onChange(of: hasReminder) { _, on in
+                withAnimation { on ? panels.enabled(.reminder) : panels.disabled(.reminder) }
+            }
             .navigationTitle(task == nil ? "Nowe zadanie" : "Edycja")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -83,5 +100,50 @@ struct TaskEditorView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Panele dat
+
+    private static func dayText(_ date: Date) -> String {
+        date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
+    }
+
+    /// Wiersz z aktualną wartością; dotknięcie rozwija lub zwija jego panel (i zwija inny).
+    private func panelRow(_ title: String, value: String, panel: EditorPanel) -> some View {
+        Button {
+            withAnimation { panels.tap(panel) }
+        } label: {
+            HStack {
+                Text(title).foregroundStyle(Theme.ink)
+                Spacer()
+                Text(value)
+                    .foregroundStyle(panels.open == panel ? Theme.ink : Theme.inkSecondary)
+                    .fontWeight(panels.open == panel ? .semibold : .regular)
+            }
+        }
+        .accessibilityValue(value)
+        .accessibilityHint(panels.open == panel ? "Zwija wybór" : "Rozwija wybór")
+    }
+
+    /// Kalendarz w treści formularza: wybór dnia zostawia godzinę i sam przechodzi dalej.
+    private func calendar(for date: Binding<Date>, field: DateField) -> some View {
+        DatePicker(
+            "Dzień",
+            selection: Binding(
+                get: { date.wrappedValue },
+                set: { day in
+                    date.wrappedValue = DayTime.settingDay(of: day, on: date.wrappedValue, calendar: .current)
+                    withAnimation { panels.pickedDay(field) }
+                }),
+            displayedComponents: .date
+        )
+        .datePickerStyle(.graphical)
+        .labelsHidden()
+    }
+
+    private var reminderTime: Binding<Date> {
+        Binding(
+            get: { reminder },
+            set: { reminder = DayTime.settingTime(of: $0, on: reminder, calendar: .current) })
     }
 }

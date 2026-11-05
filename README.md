@@ -11,6 +11,7 @@ Requirements (in Polish): [`specyfikacja_systemu_todo.md`](specyfikacja_systemu_
 | Where | What |
 |---|---|
 | iOS | add, edit, complete and delete tasks; priority (high/normal/low), due date, reminder |
+| iOS | completed tasks move to a History screen showing the local completion time; day and time are edited in inline panels |
 | iOS | local reminders at the set time, even without a connection to the display (only on the task owner's phone) |
 | iOS ↔ ESP32 | no pairing: the open app discovers the display within BLE range and syncs on its own (short connection, send own changes, fetch others', disconnect); the "Sync" button forces it immediately |
 | ESP32 | persistent task list (LittleFS) that survives restarts; merging changes from multiple phones (LWW) |

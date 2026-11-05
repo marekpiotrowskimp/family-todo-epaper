@@ -9,7 +9,10 @@ import TodoCore
 @Observable
 final class AppModel {
     private(set) var identity: Identity?
+    /// Zadania do zrobienia (lista główna).
     private(set) var tasks: [TodoTask] = []
+    /// Wykonane zadania z czasem wykonania, od najnowszego.
+    private(set) var history: [HistoryEntry] = []
     private(set) var isBusy = false
     private(set) var pendingCount = 0
     var message: String?
@@ -169,7 +172,8 @@ final class AppModel {
 
     private func refresh() async {
         guard let repository else { return }
-        tasks = repository.visibleTasks
+        tasks = repository.activeTasks
+        history = repository.history
         pendingCount = repository.pendingIDs.count
         await reminders?.reconcile(repository.allTasks)
         if reminders?.lastError != nil {

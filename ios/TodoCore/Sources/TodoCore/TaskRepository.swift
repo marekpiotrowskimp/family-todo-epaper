@@ -16,11 +16,15 @@ public struct RepositorySnapshot: Codable, Equatable, Sendable {
     public var tasks: [TodoTask]
     public var pendingIDs: [String]
     public var cursor: SyncCursor?
+    /// Czas wykonania zadań (id -> data), tylko lokalnie w telefonie; nie trafia do protokołu.
+    /// Brak klucza w starszych plikach = pusty słownik.
+    public var completedAt: [String: Date]?
 
-    public init(tasks: [TodoTask], pendingIDs: [String], cursor: SyncCursor?) {
+    public init(tasks: [TodoTask], pendingIDs: [String], cursor: SyncCursor?, completedAt: [String: Date]? = nil) {
         self.tasks = tasks
         self.pendingIDs = pendingIDs
         self.cursor = cursor
+        self.completedAt = completedAt
     }
 }
 
@@ -79,6 +83,8 @@ public final class TaskRepository {
     /// Błąd ostatniego zapisu z operacji, które nie rzucają (scalanie z urządzenia, kursor).
     public private(set) var lastSaveError: Error?
 
+    /// Czas wykonania ukończonych zadań; tylko w telefonie, poza protokołem.
+    private var completions: [String: Date] = [:]
     private let storage: TaskStorage
     private let now: () -> Date
     private let makeID: () -> String
@@ -97,6 +103,7 @@ public final class TaskRepository {
             allTasks = snapshot.tasks
             pendingIDs = Set(snapshot.pendingIDs)
             syncCursor = snapshot.cursor
+            completions = snapshot.completedAt ?? [:]
         }
     }
 
@@ -106,6 +113,28 @@ public final class TaskRepository {
             if a.status != b.status { return a.status == .active }
             return DisplayOrder.areInIncreasingOrder(a, b)
         }
+    }
+
+    /// Zadania do zrobienia (aktywne, nieusunięte) wg `DisplayOrder`.
+    public var activeTasks: [TodoTask] {
+        allTasks.filter { !$0.deleted && $0.status == .active }.sorted(by: DisplayOrder.areInIncreasingOrder)
+    }
+
+    /// Historia: ukończone, nieusunięte zadania, od ostatnio wykonanego (remis: `id` rosnąco).
+    public var history: [HistoryEntry] {
+        allTasks.filter { !$0.deleted && $0.status == .done }
+            .map { HistoryEntry(task: $0, completedAt: completions[$0.id] ?? $0.updatedAt) }
+            .sorted { a, b in
+                if a.completedAt != b.completedAt { return a.completedAt > b.completedAt }
+                return a.task.id.utf8.lexicographicallyPrecedes(b.task.id.utf8)
+            }
+    }
+
+    /// Czas wykonania zapisany w telefonie (nil dla zadań aktywnych i nieznanych).
+    /// Ukończone zadanie bez zapisanego czasu (plik ze starszej wersji) ma czas swojej wersji.
+    public func completedAt(id: String) -> Date? {
+        guard let task = task(id: id), task.status == .done else { return nil }
+        return completions[id] ?? task.updatedAt
     }
 
     public func task(id: String) -> TodoTask? {
@@ -172,9 +201,11 @@ public final class TaskRepository {
         for remote in tasks {
             if let index = index(of: remote.id) {
                 guard LWW.wins(remote, over: allTasks[index]) else { continue }
+                recordCompletion(of: remote, replacing: allTasks[index])
                 allTasks[index] = remote
                 pendingIDs.remove(remote.id)  // lokalna wersja została wyparta, nie ma czego wysyłać
             } else {
+                recordCompletion(of: remote, replacing: nil)
                 allTasks.append(remote)
             }
             changed.insert(remote.id)
@@ -219,14 +250,30 @@ public final class TaskRepository {
         task.reminderAt = task.reminderAt.map(WireTime.wholeMilliseconds)
         task.updatedAt = WireTime.wholeMilliseconds(now())
         task.updatedBy = userId
+        recordCompletion(of: task, replacing: allTasks[index])
         allTasks[index] = task
         pendingIDs.insert(task.id)
         try save()
         return task
     }
 
+    /// Ukończenie zapisuje czas wersji, która je wprowadziła (lokalnie: `now`; z innego telefonu:
+    /// jego `updatedAt`). Zadanie już ukończone zachowuje czas, przywrócone go traci.
+    private func recordCompletion(of task: TodoTask, replacing previous: TodoTask?) {
+        guard task.status == .done else {
+            completions[task.id] = nil
+            return
+        }
+        if let previous, previous.status == .done {
+            completions[task.id] = completions[task.id] ?? previous.updatedAt
+        } else {
+            completions[task.id] = task.updatedAt
+        }
+    }
+
     private func save() throws {
-        try storage.save(RepositorySnapshot(tasks: allTasks, pendingIDs: pendingIDs.sorted(), cursor: syncCursor))
+        try storage.save(RepositorySnapshot(
+            tasks: allTasks, pendingIDs: pendingIDs.sorted(), cursor: syncCursor, completedAt: completions))
         lastSaveError = nil
     }
 
