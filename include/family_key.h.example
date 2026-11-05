@@ -1,5 +1,5 @@
-// Wygeneruj prawdziwy klucz: tools/make-family-key.sh (tworzy ten plik i ios/FamilyTodo/FamilyKey.swift
-// z tym samym kluczem). Plik family_key.h nie trafia do gita.
+// Placeholder only. Generate the real key with tools/make-family-key.sh — it creates this file and
+// ios/FamilyTodo/FamilyKey.swift with the same key. family_key.h is not committed.
 #pragma once
 
 #include <cstdint>

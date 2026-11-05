@@ -1,5 +1,5 @@
-// Wygeneruj prawdziwy klucz: tools/make-family-key.sh (tworzy ten plik jako FamilyKey.swift
-// oraz include/family_key.h z tym samym kluczem). FamilyKey.swift nie trafia do gita.
+// Placeholder only. Generate the real key with tools/make-family-key.sh — it creates
+// ios/FamilyTodo/FamilyKey.swift and include/family_key.h with the same key. FamilyKey.swift is not committed.
 import Foundation
 
 enum FamilyKey {

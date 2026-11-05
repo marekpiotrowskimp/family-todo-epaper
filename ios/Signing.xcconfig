@@ -1,0 +1,10 @@
+// Signing settings for the FamilyTodo app.
+// Defaults below; put your own values in ios/Local.xcconfig (ignored by git), e.g.:
+//   DEVELOPMENT_TEAM = ABCDE12345
+//   PRODUCT_BUNDLE_IDENTIFIER = com.example.familytodo
+// tools/setup-ios-signing.sh creates that file for you.
+
+CODE_SIGN_STYLE = Automatic
+PRODUCT_BUNDLE_IDENTIFIER = pl.piotrowski.familytodo
+
+#include? "Local.xcconfig"

@@ -91,7 +91,7 @@ Errors look like `{"ok":false,"err":"…"}`. A message whose frames cannot be re
 ```
 
 ### Family key and names (no pairing)
-1. Once, before the first build: `tools/make-family-key.sh`. The script writes the same random key to `include/family_key.h` (firmware) and `ios/FamilyTodo/FamilyKey.swift` (app). Both files are in `.gitignore`.
+1. Once, before the first build: `tools/make-family-key.sh`. The script writes the same random key to `include/family_key.h` (firmware) and `ios/FamilyTodo/FamilyKey.swift` (app). Both files are in `.gitignore` and are **not in the repository** — without them neither the firmware nor the app compiles (see [Building your own](#building-your-own)).
 2. Flash the firmware and install the app built with the same key. All family members use the same app build.
 3. On first launch you enter your name (max. 32 B). The phone identifies itself with it on every sync.
 4. The device remembers up to 8 people. When a 9th appears it drops the least recently seen person, whose tasks are then shown without a name.
@@ -140,13 +140,51 @@ The firmware sets the panel border (`EPD_BORDER = 0x00`, black) before every ref
 
 ## 7. Build and test
 
+### Building your own
+
+The repository does not contain any keys. Each family generates its own, so a fresh clone needs three steps before it compiles:
+
+```sh
+git clone https://github.com/marekpiotrowskimp/family-todo-epaper.git
+cd family-todo-epaper
+
+# 1. Family key -> include/family_key.h + ios/FamilyTodo/FamilyKey.swift (git-ignored)
+tools/make-family-key.sh
+tools/make-family-key.sh --check      # optional: both files exist and hold the same key
+
+# 2. iOS signing -> ios/Local.xcconfig (git-ignored)
+#    TEAM_ID: Xcode -> Settings -> Accounts (or developer.apple.com -> Membership)
+#    BUNDLE_ID: your own, bundle identifiers are unique across Apple teams
+tools/setup-ios-signing.sh TEAM_ID com.yourname.familytodo
+
+# 3. Flash the display and install the app (both built with the same key)
+pio run -e xiao_esp32s3 -t upload
+open ios/FamilyTodo.xcodeproj         # select your iPhone, Run
+```
+
+| File (not in git) | Created by | Used by |
+|---|---|---|
+| `include/family_key.h` | `tools/make-family-key.sh` | ESP32 firmware |
+| `ios/FamilyTodo/FamilyKey.swift` | `tools/make-family-key.sh` | iOS app |
+| `ios/Local.xcconfig` | `tools/setup-ios-signing.sh` | Xcode signing (`DEVELOPMENT_TEAM`, optional `PRODUCT_BUNDLE_IDENTIFIER`) |
+
+Notes:
+- `*.example` files next to them show the format only (all-zero key); they are excluded from the build.
+- Keep the key private: anyone holding it can read and change your tasks. Share the app with family members by installing the same build (e.g. from your Mac or via TestFlight), not by sending the key.
+- `tools/make-family-key.sh --force` creates a new key; afterwards re-flash the firmware **and** rebuild the app, otherwise the display answers `bad_mac`.
+- Error `cannot find 'FamilyKey' in scope` (Xcode) or `family_key.h: No such file or directory` (PlatformIO) means step 1 was skipped.
+- To build for the Simulator only, step 2 is not needed.
+
+### Commands
+
 | What | Command |
 |---|---|
 | Family key (once) | `tools/make-family-key.sh` |
 | Firmware for the XIAO | `pio run -e xiao_esp32s3 -t upload` |
 | ESP32 logic tests on a Mac (Unity) | `pio test -e native` |
 | iOS logic tests (Swift Testing) | `swift test --package-path ios/TodoCore` |
-| App Xcode project | `xcodegen generate --spec ios/project.yml`, then open `ios/FamilyTodo.xcodeproj` |
+| iOS signing (once) | `tools/setup-ios-signing.sh TEAM_ID [BUNDLE_ID]` |
+| App Xcode project | committed as `ios/FamilyTodo.xcodeproj`; after adding/removing Swift files regenerate it with `xcodegen generate --spec ios/project.yml` |
 
 Install PlatformIO in `~/.platformio/penv`; the Homebrew version does not work on this macOS. Configuration (pins, BLE UUIDs) lives in `include/config.h`. Wi-Fi and `secrets.h` are no longer needed.
 

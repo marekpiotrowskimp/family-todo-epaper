@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0146565AF07FC188B2C3825D /* FamilyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0F42CF35701CD9E49A180E /* FamilyKey.swift */; };
 		0A2F3920B7A33091BAC21415 /* BLEDeviceLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A20423CCA16091519A1737 /* BLEDeviceLink.swift */; };
 		0C006293A4839CB46160DF55 /* TaskEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42CC5C5F9A88D7D3AAA0CA1 /* TaskEditorView.swift */; };
+		0D85024BFCCD657E96E7C77A /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53EA9CAF969C51F9F35C44D /* HistoryView.swift */; };
 		0E061A04F6E35DA3A70C5563 /* TodoCore in Frameworks */ = {isa = PBXBuildFile; productRef = 209C5BEE36ACB221DDFE09C2 /* TodoCore */; };
 		41DCDE1A0DF8E7A2EC8353FF /* IdentityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F814DF68B1574308AAD2A38 /* IdentityStore.swift */; };
 		422B24F68D22B013DE4C429B /* FamilyTodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE96962623CC97AA4235C322 /* FamilyTodoApp.swift */; };
@@ -27,7 +28,8 @@
 		3C3B38DAA4127CDABBBF0DE1 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3C842AE929FA753A1D84206B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		4979F6CE67393D2A10B6F18B /* UserNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationScheduler.swift; sourceTree = "<group>"; };
-		792AE22DC3D4826F8E1E46CE /* TodoCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TodoCore; sourceTree = SOURCE_ROOT; };
+		76E6A574CF7C33974629176F /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		792AE22DC3D4826F8E1E46CE /* TodoCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TodoCore; path = TodoCore; sourceTree = SOURCE_ROOT; };
 		7E10F20EEE1CD00C25C2123A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F814DF68B1574308AAD2A38 /* IdentityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityStore.swift; sourceTree = "<group>"; };
 		A42CC5C5F9A88D7D3AAA0CA1 /* TaskEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEditorView.swift; sourceTree = "<group>"; };
@@ -35,8 +37,9 @@
 		BE96962623CC97AA4235C322 /* FamilyTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyTodoApp.swift; sourceTree = "<group>"; };
 		D02CE69CC1BBE9B24C31C773 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
 		D2A20423CCA16091519A1737 /* BLEDeviceLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceLink.swift; sourceTree = "<group>"; };
+		D53EA9CAF969C51F9F35C44D /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		D8E8F93050AE56A916C23443 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
-		DE6C59CDF167E14BBF4576E0 /* FamilyTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE6C59CDF167E14BBF4576E0 /* FamilyTodo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FamilyTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				5A69D96880B21E3BDBACAF3D /* FamilyTodo */,
+				B5DA47ECBAD148A90874941D /* ios */,
 				2634A4DED8FE64E81414923E /* Packages */,
 				C37BF745338CB2A62F1A9FE8 /* Products */,
 			);
@@ -76,6 +80,7 @@
 				D2A20423CCA16091519A1737 /* BLEDeviceLink.swift */,
 				3C0F42CF35701CD9E49A180E /* FamilyKey.swift */,
 				BE96962623CC97AA4235C322 /* FamilyTodoApp.swift */,
+				D53EA9CAF969C51F9F35C44D /* HistoryView.swift */,
 				9F814DF68B1574308AAD2A38 /* IdentityStore.swift */,
 				3C3B38DAA4127CDABBBF0DE1 /* LaunchScreen.storyboard */,
 				A5BD716EA41CDA7ED041B6BD /* SetupView.swift */,
@@ -85,6 +90,15 @@
 				4979F6CE67393D2A10B6F18B /* UserNotificationScheduler.swift */,
 			);
 			path = FamilyTodo;
+			sourceTree = "<group>";
+		};
+		B5DA47ECBAD148A90874941D /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				76E6A574CF7C33974629176F /* Signing.xcconfig */,
+			);
+			name = ios;
+			path = .;
 			sourceTree = "<group>";
 		};
 		C37BF745338CB2A62F1A9FE8 /* Products */ = {
@@ -126,6 +140,11 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					BB806444D03EB60E3B674C88 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = E29F4849B12195C24A55604B /* Build configuration list for PBXProject "FamilyTodo" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -140,6 +159,7 @@
 			packageReferences = (
 				6A040D109B1D5330939556F2 /* XCLocalSwiftPackageReference "TodoCore" */,
 			);
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -169,6 +189,7 @@
 				0A2F3920B7A33091BAC21415 /* BLEDeviceLink.swift in Sources */,
 				0146565AF07FC188B2C3825D /* FamilyKey.swift in Sources */,
 				422B24F68D22B013DE4C429B /* FamilyTodoApp.swift in Sources */,
+				0D85024BFCCD657E96E7C77A /* HistoryView.swift in Sources */,
 				41DCDE1A0DF8E7A2EC8353FF /* IdentityStore.swift in Sources */,
 				6461D1616753E6D7304B1D1E /* SetupView.swift in Sources */,
 				0C006293A4839CB46160DF55 /* TaskEditorView.swift in Sources */,
@@ -239,12 +260,12 @@
 		};
 		88AC75B894340A4FC9B54A40 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 76E6A574CF7C33974629176F /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JMMW48F6X4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Zadania;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Synchronizacja zadań z domowym wyświetlaczem.";
@@ -254,7 +275,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = pl.piotrowski.familytodo;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -326,12 +346,12 @@
 		};
 		D5770466D64EC4183D51FA0A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 76E6A574CF7C33974629176F /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JMMW48F6X4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Zadania;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Synchronizacja zadań z domowym wyświetlaczem.";
@@ -341,7 +361,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = pl.piotrowski.familytodo;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -3,6 +3,7 @@
 include/secrets.h
 include/family_key.h
 ios/FamilyTodo/FamilyKey.swift
+ios/Local.xcconfig
 
 # sekrety / system
 .DS_Store
@@ -14,3 +15,6 @@ secrets.py
 ios/TodoCore/.build/
 # vim swap files
 *.swp
+# Xcode per-user state
+xcuserdata/
+ios/TodoCore/.swiftpm/
