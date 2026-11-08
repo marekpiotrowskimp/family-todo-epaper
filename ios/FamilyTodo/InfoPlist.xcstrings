@@ -1,0 +1,60 @@
+{
+  "sourceLanguage": "pl",
+  "strings": {
+    "CFBundleDisplayName": {
+      "comment": "Info.plist",
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadania"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To-Do"
+          }
+        }
+      }
+    },
+    "CFBundleName": {
+      "comment": "Info.plist",
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadania"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To-Do"
+          }
+        }
+      }
+    },
+    "NSBluetoothAlwaysUsageDescription": {
+      "comment": "Info.plist",
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronizacja zadań z domowym wyświetlaczem."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syncs tasks with your home e-paper display."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

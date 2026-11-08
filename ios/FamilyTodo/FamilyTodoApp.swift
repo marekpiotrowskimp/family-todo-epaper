@@ -3,7 +3,7 @@ import TodoCore
 
 @main
 struct FamilyTodoApp: App {
-    @State private var model = AppModel()
+    @State private var model = Self.makeModel()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -18,6 +18,14 @@ struct FamilyTodoApp: App {
             .onChange(of: scenePhase, initial: true) { _, phase in
                 model.setActive(phase == .active)
             }
+            .onOpenURL { model.handle(url: $0) }  // familytodo://key?k=… z kodu QR
         }
+    }
+
+    @MainActor private static func makeModel() -> AppModel {
+        #if DEBUG
+        if DemoScreen.current != nil { return DemoData.model() }
+        #endif
+        return AppModel()
     }
 }

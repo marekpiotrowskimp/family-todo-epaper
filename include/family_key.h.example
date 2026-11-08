@@ -1,5 +1,5 @@
-// Placeholder only. Generate the real key with tools/make-family-key.sh — it creates this file and
-// ios/FamilyTodo/FamilyKey.swift with the same key. family_key.h is not committed.
+// Placeholder only. Generate the real key with tools/make-family-key.sh — it creates this file
+// and prints the key as a QR code / link for the iOS app. family_key.h is not committed.
 #pragma once
 
 #include <cstdint>

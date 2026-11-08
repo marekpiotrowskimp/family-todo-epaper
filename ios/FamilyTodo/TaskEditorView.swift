@@ -88,7 +88,7 @@ struct TaskEditorView: View {
             .onChange(of: hasReminder) { _, on in
                 withAnimation { on ? panels.enabled(.reminder) : panels.disabled(.reminder) }
             }
-            .navigationTitle(task == nil ? "Nowe zadanie" : "Edycja")
+            .navigationTitle(task == nil ? Text("Nowe zadanie") : Text("Edycja"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Anuluj") { dismiss() } }
@@ -109,7 +109,7 @@ struct TaskEditorView: View {
     }
 
     /// Wiersz z aktualną wartością; dotknięcie rozwija lub zwija jego panel (i zwija inny).
-    private func panelRow(_ title: String, value: String, panel: EditorPanel) -> some View {
+    private func panelRow(_ title: LocalizedStringKey, value: String, panel: EditorPanel) -> some View {
         Button {
             withAnimation { panels.tap(panel) }
         } label: {
@@ -122,7 +122,7 @@ struct TaskEditorView: View {
             }
         }
         .accessibilityValue(value)
-        .accessibilityHint(panels.open == panel ? "Zwija wybór" : "Rozwija wybór")
+        .accessibilityHint(panels.open == panel ? Text("Zwija wybór") : Text("Rozwija wybór"))
     }
 
     /// Kalendarz w treści formularza: wybór dnia zostawia godzinę i sam przechodzi dalej.

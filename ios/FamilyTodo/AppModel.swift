@@ -9,6 +9,8 @@ import TodoCore
 @Observable
 final class AppModel {
     private(set) var identity: Identity?
+    /// Wspólny klucz rodziny z Keychain; bez niego aplikacja działa jako lokalna lista, bez synchronizacji.
+    private(set) var familyKey: Data?
     /// Zadania do zrobienia (lista główna).
     private(set) var tasks: [TodoTask] = []
     /// Wykonane zadania z czasem wykonania, od najnowszego.
@@ -25,33 +27,96 @@ final class AppModel {
     private var lastLocalChange: Date?
     private var isActive = false
     private var scheduled: Task<Void, Never>?
+    /// Tryb demonstracyjny (zrzuty ekranu): dane przykładowe w pamięci, bez BLE i powiadomień.
+    let isDemo: Bool
 
     /// Po nieudanej decyzji „nie teraz” skanujemy ponownie po tym czasie.
     private static let idleRescan: Duration = .seconds(15)
 
     init() {
+        isDemo = false
+        familyKey = FamilyKeyStore.load()
         if let identity = IdentityStore.load() {
             open(identity)
         }
     }
 
+    /// Model z gotowymi danymi, bez Keychain, BLE i powiadomień (zrzuty ekranu, podglądy).
+    init(demoIdentity: Identity, familyKey: Data?, repository: TaskRepository, needsSetup: Bool = false) {
+        isDemo = true
+        identity = needsSetup ? nil : demoIdentity
+        self.familyKey = familyKey
+        self.repository = repository
+        tasks = repository.activeTasks
+        history = repository.history
+    }
+
     // MARK: - Konfiguracja
 
-    func setUp(displayName: String) {
+    /// Pierwsze uruchomienie: imię i opcjonalnie klucz rodziny (można go dodać później w ustawieniach).
+    func setUp(displayName: String, keyText: String) {
         let name = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !name.isEmpty else { return message = "Podaj imię." }
-        guard name.utf8.count <= Self.maxNameBytes else { return message = "Imię jest za długie." }
+        guard !name.isEmpty else { return message = String(localized: "Podaj imię.") }
+        guard name.utf8.count <= Self.maxNameBytes else { return message = String(localized: "Imię jest za długie.") }
+        if !keyText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            guard setFamilyKey(keyText) else { return }
+        }
+        message = nil
         open(IdentityStore.create(displayName: name))
-        if isActive { link.startDiscovery { [weak self] in self?.deviceSeen() } }
+        startDiscoveryIfPossible()
         Task { await requestNotifications() }
+    }
+
+    // MARK: - Klucz rodziny
+
+    /// Zapisuje klucz wpisany ręcznie lub wklejony (hex albo link). Fałsz i komunikat, gdy tekst nie jest kluczem.
+    @discardableResult
+    func setFamilyKey(_ text: String) -> Bool {
+        guard let key = FamilyKeyCode.parse(text) else {
+            message = String(localized: "To nie jest klucz rodziny (64 znaki 0–9, a–f albo link familytodo://).")
+            return false
+        }
+        return store(key)
+    }
+
+    /// Link `familytodo://key?k=…` otwarty z kodu QR aparatem iPhone'a.
+    func handle(url: URL) {
+        guard let key = FamilyKeyCode.key(from: url) else {
+            message = String(localized: "Ten link nie zawiera klucza rodziny.")
+            return
+        }
+        if store(key) { message = String(localized: "Zapisano klucz rodziny.") }
+    }
+
+    func removeFamilyKey() {
+        if !isDemo { FamilyKeyStore.delete() }
+        familyKey = nil
+        scheduled?.cancel()
+        link.stopDiscovery()
+    }
+
+    private func store(_ key: Data) -> Bool {
+        guard isDemo || FamilyKeyStore.save(key) else {
+            message = String(localized: "Nie udało się zapisać klucza w pęku kluczy.")
+            return false
+        }
+        familyKey = key
+        policy = AutoSyncPolicy()
+        startDiscoveryIfPossible()
+        return true
+    }
+
+    private func startDiscoveryIfPossible() {
+        guard isActive, !isDemo, identity != nil, familyKey != nil else { return }
+        link.startDiscovery { [weak self] in self?.deviceSeen() }
     }
 
     /// Wywoływane przy zmianie `scenePhase`: obserwujemy zasięg tylko na pierwszym planie.
     func setActive(_ active: Bool) {
         isActive = active
-        guard identity != nil else { return }
+        guard identity != nil, !isDemo else { return }
         if active {
-            link.startDiscovery { [weak self] in self?.deviceSeen() }
+            startDiscoveryIfPossible()
         } else {
             scheduled?.cancel()
             link.stopDiscovery()
@@ -89,6 +154,9 @@ final class AppModel {
 
     /// Ręczna synchronizacja (przycisk): bez czekania na politykę.
     func syncNow() async {
+        guard familyKey != nil else {
+            return message = String(localized: "Dodaj klucz rodziny w ustawieniach, żeby synchronizować z wyświetlaczem.")
+        }
         scheduled?.cancel()
         await runSync()
     }
@@ -114,21 +182,21 @@ final class AppModel {
     }
 
     private func runSync() async {
-        guard let identity, let repository, !isBusy else { return }
+        guard let identity, let repository, let familyKey, !isDemo, !isBusy else { return }
         isBusy = true
         // Czas startu, nie końca: zmiana zrobiona w trakcie sesji ma być nowsza od sukcesu
         // i dostać własną synchronizację po 2 s (AutoSyncPolicy.debounce).
         let started = Date()
         let engine = SyncEngine(
             repository: repository, link: link,
-            credentials: Credentials(userId: identity.userId, displayName: identity.displayName, secret: FamilyKey.secret))
+            credentials: Credentials(userId: identity.userId, displayName: identity.displayName, secret: familyKey))
         do {
             let report = try await engine.sync()
             policy.recordSuccess(at: started)
             if !report.rejectedIDs.isEmpty {
-                message = "Wyświetlacz odrzucił \(report.rejectedIDs.count) zadań (pełna pamięć lub błędne dane)."
+                message = String(localized: "Wyświetlacz odrzucił \(report.rejectedIDs.count) zadań (pełna pamięć lub błędne dane).")
             } else if let error = repository.lastSaveError {
-                message = "Nie udało się zapisać danych: \(error.localizedDescription)"
+                message = String(localized: "Nie udało się zapisać danych: \(error.localizedDescription)")
             } else {
                 message = nil
             }
@@ -150,7 +218,7 @@ final class AppModel {
         do {
             repository = try TaskRepository(userId: identity.userId, storage: FileTaskStorage(url: Self.storageURL()))
         } catch {
-            message = "Nie udało się wczytać zadań: \(error.localizedDescription)"
+            message = String(localized: "Nie udało się wczytać zadań: \(error.localizedDescription)")
         }
         reminders = ReminderScheduler(center: notifications, userId: identity.userId)
         Task { await refresh() }
@@ -177,7 +245,7 @@ final class AppModel {
         pendingCount = repository.pendingIDs.count
         await reminders?.reconcile(repository.allTasks)
         if reminders?.lastError != nil {
-            message = "Nie udało się zaplanować przypomnienia. Sprawdź zgodę na powiadomienia."
+            message = String(localized: "Nie udało się zaplanować przypomnienia. Sprawdź zgodę na powiadomienia.")
         }
     }
 
@@ -185,7 +253,7 @@ final class AppModel {
         do {
             _ = try await notifications.requestAuthorization()
         } catch {
-            message = "Brak zgody na powiadomienia: \(error.localizedDescription)"
+            message = String(localized: "Brak zgody na powiadomienia: \(error.localizedDescription)")
         }
     }
 
@@ -195,14 +263,14 @@ final class AppModel {
 
     private static func describe(_ error: Error) -> String {
         switch error {
-        case TaskValidationError.emptyTitle: return "Tytuł nie może być pusty."
-        case TaskValidationError.titleTooLong: return "Tytuł jest za długi (maks. \(TaskLimits.maxTitleBytes) bajtów)."
-        case TaskValidationError.notFound: return "Nie znaleziono zadania."
-        case SyncError.unauthorized: return "Wyświetlacz ma inny klucz rodziny niż ta aplikacja."
-        case SyncError.device("bad_frame"): return "Zakłócona transmisja. Synchronizacja zostanie ponowiona."
-        case let SyncError.device(code): return "Błąd wyświetlacza: \(code)."
-        case SyncError.malformedResponse: return "Niezrozumiała odpowiedź wyświetlacza."
-        case let SyncError.transport(reason): return "Brak połączenia z wyświetlaczem (\(reason))."
+        case TaskValidationError.emptyTitle: return String(localized: "Tytuł nie może być pusty.")
+        case TaskValidationError.titleTooLong: return String(localized: "Tytuł jest za długi (maks. \(TaskLimits.maxTitleBytes) bajtów).")
+        case TaskValidationError.notFound: return String(localized: "Nie znaleziono zadania.")
+        case SyncError.unauthorized: return String(localized: "Wyświetlacz ma inny klucz rodziny niż ta aplikacja.")
+        case SyncError.device("bad_frame"): return String(localized: "Zakłócona transmisja. Synchronizacja zostanie ponowiona.")
+        case let SyncError.device(code): return String(localized: "Błąd wyświetlacza: \(code).")
+        case SyncError.malformedResponse: return String(localized: "Niezrozumiała odpowiedź wyświetlacza.")
+        case let SyncError.transport(reason): return String(localized: "Brak połączenia z wyświetlaczem (\(reason)).")
         default: return error.localizedDescription
         }
     }

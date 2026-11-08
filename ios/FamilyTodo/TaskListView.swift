@@ -5,6 +5,8 @@ struct TaskListView: View {
     @Bindable var model: AppModel
     @State private var editing: TodoTask?
     @State private var isAdding = false
+    @State private var showsHistory = false
+    @State private var showsSettings = false
 
     var body: some View {
         NavigationStack {
@@ -27,6 +29,9 @@ struct TaskListView: View {
             .navigationTitle("Zadania")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
+                    Button { showsSettings = true } label: { Label("Ustawienia", systemImage: "gearshape") }
+                }
+                ToolbarItem(placement: .topBarLeading) {
                     if model.isBusy {
                         ProgressView()
                     } else {
@@ -39,9 +44,7 @@ struct TaskListView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        HistoryView(model: model)
-                    } label: {
+                    Button { showsHistory = true } label: {
                         Label("Historia", systemImage: "clock.arrow.circlepath")
                     }
                 }
@@ -49,6 +52,8 @@ struct TaskListView: View {
                     Button { isAdding = true } label: { Label("Dodaj zadanie", systemImage: "plus") }
                 }
             }
+            .navigationDestination(isPresented: $showsHistory) { HistoryView(model: model) }
+            .sheet(isPresented: $showsSettings) { SettingsView(model: model, showsCode: model.isDemo) }
             .sheet(isPresented: $isAdding) {
                 TaskEditorView(task: nil) { title, priority, due, reminder in
                     model.create(title: title, priority: priority, dueAt: due, reminderAt: reminder)
@@ -60,6 +65,20 @@ struct TaskListView: View {
                 }
             }
         }
+        .onAppear(perform: openDemoScreen)
+    }
+
+    /// Zrzuty ekranu: od razu otwiera ekran wskazany argumentem `-demoScreen`.
+    private func openDemoScreen() {
+        #if DEBUG
+        guard model.isDemo else { return }
+        switch DemoScreen.current {
+        case .editor: editing = model.tasks.first { $0.reminderAt != nil && model.isMine($0) }
+        case .history: showsHistory = true
+        case .settings: showsSettings = true
+        default: break
+        }
+        #endif
     }
 
     private func row(_ task: TodoTask) -> some View {

@@ -1,6 +1,7 @@
 name: FamilyTodo
 options:
   bundleIdPrefix: pl.piotrowski
+  developmentLanguage: pl
   deploymentTarget:
     iOS: "17.0"
 packages:
@@ -12,7 +13,18 @@ targets:
     platform: iOS
     sources:
       - path: FamilyTodo
-        excludes: ["*.example"]
+        excludes: ["*.example", "Info.plist"]
+    info:
+      path: FamilyTodo/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: pl
+        CFBundleAllowMixedLocalizations: true
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleURLTypes:
+          - CFBundleURLName: pl.piotrowski.familytodo.key
+            CFBundleURLSchemes: [familytodo]
+        ITSAppUsesNonExemptEncryption: false
     dependencies:
       - package: TodoCore
     configFiles:
@@ -22,9 +34,15 @@ targets:
       base:
         SWIFT_VERSION: "6.0"
         # PRODUCT_BUNDLE_IDENTIFIER and DEVELOPMENT_TEAM: see Signing.xcconfig / Local.xcconfig
-        MARKETING_VERSION: "0.1"
+        MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: YES
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
         INFOPLIST_KEY_CFBundleDisplayName: Zadania
         INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription: "Synchronizacja zadań z domowym wyświetlaczem."
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

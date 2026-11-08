@@ -1,7 +1,7 @@
 import Foundation
 
 /// Tożsamość telefonu w rodzinie. Bez parowania: wystarczy `userId` i imię pokazywane na wyświetlaczu.
-/// Dostęp do urządzenia daje wspólny klucz rodziny (`FamilyKey`, generowany przez tools/make-family-key.sh).
+/// Dostęp do urządzenia daje wspólny klucz rodziny (`FamilyKeyStore`, Keychain; podawany w aplikacji).
 struct Identity: Equatable {
     var userId: String
     var displayName: String

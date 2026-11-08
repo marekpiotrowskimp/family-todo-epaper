@@ -25,7 +25,7 @@ final class UserNotificationScheduler: NotificationScheduling {
 
     func schedule(_ reminder: ReminderRequest) async throws {
         let content = UNMutableNotificationContent()
-        content.title = "Przypomnienie"
+        content.title = String(localized: "Przypomnienie")
         content.body = reminder.title
         content.sound = .default
         content.userInfo = [Self.fireAtKey: Int64((reminder.fireAt.timeIntervalSince1970 * 1000).rounded())]

@@ -1,7 +1,0 @@
-// Placeholder only. Generate the real key with tools/make-family-key.sh — it creates
-// ios/FamilyTodo/FamilyKey.swift and include/family_key.h with the same key. FamilyKey.swift is not committed.
-import Foundation
-
-enum FamilyKey {
-    static let secret = Data(repeating: 0, count: 32)
-}

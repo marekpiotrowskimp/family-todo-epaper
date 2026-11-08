@@ -12,6 +12,7 @@ Requirements (in Polish): [`specyfikacja_systemu_todo.md`](specyfikacja_systemu_
 |---|---|
 | iOS | add, edit, complete and delete tasks; priority (high/normal/low), due date, reminder |
 | iOS | completed tasks move to a History screen showing the local completion time; day and time are edited in inline panels |
+| iOS | family key entered in the app (QR code / link / paste), kept in the Keychain — one App Store build works with any display; Polish and English UI |
 | iOS | local reminders at the set time, even without a connection to the display (only on the task owner's phone) |
 | iOS ↔ ESP32 | no pairing: the open app discovers the display within BLE range and syncs on its own (short connection, send own changes, fetch others', disconnect); the "Sync" button forces it immediately |
 | ESP32 | persistent task list (LittleFS) that survives restarts; merging changes from multiple phones (LWW) |
@@ -91,12 +92,13 @@ Errors look like `{"ok":false,"err":"…"}`. A message whose frames cannot be re
 ```
 
 ### Family key and names (no pairing)
-1. Once, before the first build: `tools/make-family-key.sh`. The script writes the same random key to `include/family_key.h` (firmware) and `ios/FamilyTodo/FamilyKey.swift` (app). Both files are in `.gitignore` and are **not in the repository** — without them neither the firmware nor the app compiles (see [Building your own](#building-your-own)).
-2. Flash the firmware and install the app built with the same key. All family members use the same app build.
-3. On first launch you enter your name (max. 32 B). The phone identifies itself with it on every sync.
-4. The device remembers up to 8 people. When a 9th appears it drops the least recently seen person, whose tasks are then shown without a name.
+1. Once, before flashing: `tools/make-family-key.sh`. The script writes a random key to `include/family_key.h` (firmware, in `.gitignore`, **not in the repository**) and prints it as a `familytodo://key?k=…` link and — with `qrencode` installed — a QR code.
+2. On each phone: scan the QR code with the iPhone camera (or paste the link / 64-character key on the Welcome or Settings screen). The app stores the key in the Keychain; the key is never compiled into the app, so one build — e.g. from the App Store — works with any family's display.
+3. A family member who already has the key can show it as a QR code in **Settings → Show QR code for a family member**.
+4. On first launch you enter your name (max. 32 B). The phone identifies itself with it on every sync.
+5. The device remembers up to 8 people. When a 9th appears it drops the least recently seen person, whose tasks are then shown without a name.
 
-Anyone with the app containing the key can change tasks. A foreign BLE app in range cannot.
+Anyone holding the key can change tasks. A foreign BLE app — or this app without the key — cannot. Without a key the app works as a task list on that phone only.
 
 ### When the app syncs on its own
 - **When it runs:** only while the app is in the foreground and the display is in range.
@@ -142,38 +144,42 @@ The firmware sets the panel border (`EPD_BORDER = 0x00`, black) before every ref
 
 ### Building your own
 
-The repository does not contain any keys. Each family generates its own, so a fresh clone needs three steps before it compiles:
+The repository does not contain any keys. Each family generates its own:
 
 ```sh
 git clone https://github.com/marekpiotrowskimp/family-todo-epaper.git
 cd family-todo-epaper
 
-# 1. Family key -> include/family_key.h + ios/FamilyTodo/FamilyKey.swift (git-ignored)
+# 1. Family key -> include/family_key.h (git-ignored) + link / QR code for the phones
+brew install qrencode                 # optional: QR code in the terminal
 tools/make-family-key.sh
-tools/make-family-key.sh --check      # optional: both files exist and hold the same key
+tools/make-family-key.sh --show       # show the link / QR code again later
 
-# 2. iOS signing -> ios/Local.xcconfig (git-ignored)
+# 2. Flash the display
+pio run -e xiao_esp32s3 -t upload
+
+# 3. iOS app — either install it from the App Store, or build it yourself:
 #    TEAM_ID: Xcode -> Settings -> Accounts (or developer.apple.com -> Membership)
 #    BUNDLE_ID: your own, bundle identifiers are unique across Apple teams
-tools/setup-ios-signing.sh TEAM_ID com.yourname.familytodo
-
-# 3. Flash the display and install the app (both built with the same key)
-pio run -e xiao_esp32s3 -t upload
+tools/setup-ios-signing.sh TEAM_ID com.yourname.familytodo   # -> ios/Local.xcconfig (git-ignored)
 open ios/FamilyTodo.xcodeproj         # select your iPhone, Run
+
+# 4. On each phone: scan the QR code from step 1 with the camera, tap "Open in To-Do"
 ```
 
 | File (not in git) | Created by | Used by |
 |---|---|---|
 | `include/family_key.h` | `tools/make-family-key.sh` | ESP32 firmware |
-| `ios/FamilyTodo/FamilyKey.swift` | `tools/make-family-key.sh` | iOS app |
 | `ios/Local.xcconfig` | `tools/setup-ios-signing.sh` | Xcode signing (`DEVELOPMENT_TEAM`, optional `PRODUCT_BUNDLE_IDENTIFIER`) |
 
 Notes:
-- `*.example` files next to them show the format only (all-zero key); they are excluded from the build.
-- Keep the key private: anyone holding it can read and change your tasks. Share the app with family members by installing the same build (e.g. from your Mac or via TestFlight), not by sending the key.
-- `tools/make-family-key.sh --force` creates a new key; afterwards re-flash the firmware **and** rebuild the app, otherwise the display answers `bad_mac`.
-- Error `cannot find 'FamilyKey' in scope` (Xcode) or `family_key.h: No such file or directory` (PlatformIO) means step 1 was skipped.
-- To build for the Simulator only, step 2 is not needed.
+- `include/family_key.h.example` shows the format only (all-zero key).
+- The iOS app needs no key to compile; it asks for one at first launch (or later in Settings) and keeps it in the Keychain.
+- Keep the key private: anyone holding it can read and change your tasks. Show the QR code only to family members.
+- `tools/make-family-key.sh --force` creates a new key; afterwards re-flash the firmware **and** enter the new key on every phone, otherwise the display answers `bad_mac` ("The display has a different family key").
+- `family_key.h: No such file or directory` (PlatformIO) means step 1 was skipped.
+- To build for the Simulator only, the signing step is not needed.
+- App Store screenshots: `release_apple_store/make_screenshots.sh` (demo data, Polish and English).
 
 ### Commands
 

@@ -30,6 +30,17 @@ struct HistoryView: View {
         .navigationTitle("Historia")
     }
 
+    /// „dziś, 14:32” / „wczoraj, 9:05” / „2 lis, 10:30” — dzień i godzina w formacie języka telefonu.
+    private static func completedLabel(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let time = date.formatted(date: .omitted, time: .shortened)
+        if calendar.isDateInToday(date) { return String(localized: "dziś, \(time)") }
+        if calendar.isDateInYesterday(date) { return String(localized: "wczoraj, \(time)") }
+        let sameYear = calendar.isDate(date, equalTo: .now, toGranularity: .year)
+        let day = sameYear ? Date.FormatStyle().day().month(.abbreviated) : Date.FormatStyle().day().month(.abbreviated).year()
+        return "\(date.formatted(day)), \(time)"
+    }
+
     private func row(_ entry: HistoryEntry) -> some View {
         HStack(spacing: 12) {
             PriorityMark(priority: entry.task.priority)
@@ -37,7 +48,7 @@ struct HistoryView: View {
                 Text(entry.task.title)
                     .foregroundStyle(Theme.ink)
                 HStack(spacing: 8) {
-                    Text("Wykonano \(HistoryFormat.completedLabel(entry.completedAt, now: .now, calendar: .current))")
+                    Text("Wykonano \(Self.completedLabel(entry.completedAt))")
                     if !model.isMine(entry.task) { Text("od innego domownika") }
                 }
                 .font(.caption)

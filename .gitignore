@@ -2,7 +2,6 @@
 .vscode/
 include/secrets.h
 include/family_key.h
-ios/FamilyTodo/FamilyKey.swift
 ios/Local.xcconfig
 
 # sekrety / system

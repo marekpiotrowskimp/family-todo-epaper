@@ -1,0 +1,831 @@
+{
+  "sourceLanguage" : "pl",
+  "strings" : {
+    "Anuluj" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Bez klucza zadania zostają na tym telefonie. Klucz utworzysz poleceniem tools/make-family-key.sh przy budowie wyświetlacza." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a key, tasks stay on this phone. You create the key with tools/make-family-key.sh when building the display."
+          }
+        }
+      }
+    },
+    "Brak połączenia z wyświetlaczem (%@)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannot connect to the display (%@)."
+          }
+        }
+      }
+    },
+    "Brak wykonanych zadań" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No completed tasks"
+          }
+        }
+      }
+    },
+    "Brak zadań" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tasks"
+          }
+        }
+      }
+    },
+    "Brak zgody na powiadomienia: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications not allowed: %@"
+          }
+        }
+      }
+    },
+    "Błąd wyświetlacza: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display error: %@."
+          }
+        }
+      }
+    },
+    "Co trzeba zrobić?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What needs doing?"
+          }
+        }
+      }
+    },
+    "Dalej" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        }
+      }
+    },
+    "Do zrobienia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To do"
+          }
+        }
+      }
+    },
+    "Dodaj klucz rodziny w ustawieniach, żeby synchronizować z wyświetlaczem." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the family key in Settings to sync with the display."
+          }
+        }
+      }
+    },
+    "Dodaj pierwsze zadanie przyciskiem +." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add your first task with the + button."
+          }
+        }
+      }
+    },
+    "Dodaj zadanie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add task"
+          }
+        }
+      }
+    },
+    "Domownik skanuje ten kod aparatem iPhone'a i otwiera link w aplikacji. Kto ma klucz, może zmieniać zadania rodziny — pokazuj go tylko domownikom." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A family member scans this code with the iPhone camera and opens the link in the app. Anyone with the key can change your family's tasks — show it to family members only."
+          }
+        }
+      }
+    },
+    "Dzień" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day"
+          }
+        }
+      }
+    },
+    "Edycja" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        }
+      }
+    },
+    "Godzina" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        }
+      }
+    },
+    "Godzina przypomnienia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder time"
+          }
+        }
+      }
+    },
+    "Gotowe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "Historia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        }
+      }
+    },
+    "Imię" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "Imię jest za długie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The name is too long."
+          }
+        }
+      }
+    },
+    "Imię na wyświetlaczu" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name on the display"
+          }
+        }
+      }
+    },
+    "Jak zbudować wyświetlacz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to build the display"
+          }
+        }
+      }
+    },
+    "Klucz (64 znaki) lub link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key (64 characters) or link"
+          }
+        }
+      }
+    },
+    "Klucz rodziny" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Family key"
+          }
+        }
+      }
+    },
+    "Klucz rodziny zapisany" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Family key saved"
+          }
+        }
+      }
+    },
+    "Kod QR klucza rodziny" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Family key QR code"
+          }
+        }
+      }
+    },
+    "Nie udało się wczytać zadań: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load tasks: %@"
+          }
+        }
+      }
+    },
+    "Nie udało się zapisać danych: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save data: %@"
+          }
+        }
+      }
+    },
+    "Nie udało się zapisać klucza w pęku kluczy." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save the key to the keychain."
+          }
+        }
+      }
+    },
+    "Nie udało się zaplanować przypomnienia. Sprawdź zgodę na powiadomienia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not schedule the reminder. Check notification permissions."
+          }
+        }
+      }
+    },
+    "Nie znaleziono zadania." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task not found."
+          }
+        }
+      }
+    },
+    "Niezrozumiała odpowiedź wyświetlacza." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected response from the display."
+          }
+        }
+      }
+    },
+    "Niski" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Low"
+          }
+        }
+      }
+    },
+    "Niski priorytet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Low priority"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Normalny" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        }
+      }
+    },
+    "Normalny priorytet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal priority"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Nowe zadanie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New task"
+          }
+        }
+      }
+    },
+    "Podaj imię." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your name."
+          }
+        }
+      }
+    },
+    "Pokaż kod QR dla domownika" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show QR code for a family member"
+          }
+        }
+      }
+    },
+    "Priorytet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priority"
+          }
+        }
+      }
+    },
+    "Przypomnienie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder"
+          }
+        }
+      }
+    },
+    "Przypomnienie przychodzi na ten telefon, także bez połączenia z wyświetlaczem." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The reminder arrives on this phone, even without a connection to the display."
+          }
+        }
+      }
+    },
+    "Przywróć" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore"
+          }
+        }
+      }
+    },
+    "Rozwija wybór" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expands the picker"
+          }
+        }
+      }
+    },
+    "Synchronizuj" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync"
+          }
+        }
+      }
+    },
+    "Ten link nie zawiera klucza rodziny." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This link does not contain a family key."
+          }
+        }
+      }
+    },
+    "Termin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due date"
+          }
+        }
+      }
+    },
+    "To imię pojawi się na wyświetlaczu obok Twoich zadań." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This name appears on the display next to your tasks."
+          }
+        }
+      }
+    },
+    "To nie jest klucz rodziny (64 znaki 0–9, a–f albo link familytodo://)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is not a family key (64 characters 0–9, a–f or a familytodo:// link)."
+          }
+        }
+      }
+    },
+    "Tytuł jest za długi (maks. %lld bajtów)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The title is too long (max. %lld bytes)."
+          }
+        }
+      }
+    },
+    "Tytuł nie może być pusty." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The title cannot be empty."
+          }
+        }
+      }
+    },
+    "Ustawienia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
+    "Usuń" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "Usuń klucz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove key"
+          }
+        }
+      }
+    },
+    "Witaj" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome"
+          }
+        }
+      }
+    },
+    "Wykonane" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed"
+          }
+        }
+      }
+    },
+    "Wykonano %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done %@"
+          }
+        }
+      }
+    },
+    "Wysoki" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High"
+          }
+        }
+      }
+    },
+    "Wysoki priorytet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High priority"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Wyświetlacz e-papierowy (ESP32-S3) budujesz sam według otwartej instrukcji. Aplikacja nie wysyła danych do internetu." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You build the e-paper display (ESP32-S3) yourself from the open-source instructions. The app sends no data to the internet."
+          }
+        }
+      }
+    },
+    "Wyświetlacz ma inny klucz rodziny niż ta aplikacja." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The display has a different family key than this app."
+          }
+        }
+      }
+    },
+    "Wyświetlacz odrzucił %lld zadań (pełna pamięć lub błędne dane)." : {
+      "localizations" : {
+        "pl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Wyświetlacz odrzucił %lld zadanie (pełna pamięć lub błędne dane)."
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Wyświetlacz odrzucił %lld zadania (pełna pamięć lub błędne dane)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Wyświetlacz odrzucił %lld zadań (pełna pamięć lub błędne dane)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Wyświetlacz odrzucił %lld zadania (pełna pamięć lub błędne dane)."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The display rejected %lld task (memory full or invalid data)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The display rejected %lld tasks (memory full or invalid data)."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Za długi tytuł (%lld/%lld bajtów)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title too long (%1$lld/%2$lld bytes)."
+          }
+        }
+      }
+    },
+    "Zadania" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        }
+      }
+    },
+    "Zadania oznaczone jako zrobione trafią tutaj." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks marked as done will appear here."
+          }
+        }
+      }
+    },
+    "Zakłócona transmisja. Synchronizacja zostanie ponowiona." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transmission error. Sync will be retried."
+          }
+        }
+      }
+    },
+    "Zapisano klucz rodziny." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Family key saved."
+          }
+        }
+      }
+    },
+    "Zapisz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "Zapisz klucz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save key"
+          }
+        }
+      }
+    },
+    "Zeskanuj aparatem iPhone'a kod QR klucza (z komputera, na którym zbudowano wyświetlacz, albo z ustawień aplikacji domownika) lub wklej klucz. Bez klucza aplikacja działa jako lista na tym telefonie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan the key's QR code with the iPhone camera (from the computer the display was built on, or from a family member's app settings) or paste the key. Without a key the app works as a list on this phone."
+          }
+        }
+      }
+    },
+    "Zmień klucz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change key"
+          }
+        }
+      }
+    },
+    "Zrobione" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "Zwija wybór" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collapses the picker"
+          }
+        }
+      }
+    },
+    "dziś, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "today, %@"
+          }
+        }
+      }
+    },
+    "od innego domownika" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "from another family member"
+          }
+        }
+      }
+    },
+    "wczoraj, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yesterday, %@"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

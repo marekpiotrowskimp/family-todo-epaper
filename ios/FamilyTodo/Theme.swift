@@ -31,9 +31,9 @@ extension View {
 
 /// Nagłówek sekcji listy w kolorze tekstu pomocniczego palety.
 struct SectionHeader: View {
-    let title: String
+    let title: LocalizedStringKey
 
-    init(_ title: String) {
+    init(_ title: LocalizedStringKey) {
         self.title = title
     }
 
@@ -51,6 +51,6 @@ struct PriorityMark: View {
             .font(.subheadline)
             .frame(width: 22)
             .foregroundStyle(Theme.ink)
-            .accessibilityLabel(PriorityStyle.accessibilityLabel(for: priority))
+            .accessibilityLabel(Text(LocalizedStringKey(PriorityStyle.accessibilityLabel(for: priority))))
     }
 }
