@@ -3,13 +3,15 @@ import TodoCore
 
 struct TaskEditorView: View {
     /// Zwraca `true`, gdy zapis się udał (inaczej formularz zostaje otwarty, a błąd pokazuje lista).
-    typealias Save = (_ title: String, _ priority: Priority, _ due: Date?, _ reminder: Date?) -> Bool
+    typealias Save = (_ title: String, _ note: String, _ priority: Priority, _ due: Date?, _ reminder: Date?) -> Bool
 
     let task: TodoTask?
     let onSave: Save
     @Environment(\.dismiss) private var dismiss
 
     @State private var title: String
+    /// Notatka tylko w tym telefonie; nie trafia na wyświetlacz.
+    @State private var note: String
     @State private var priority: Priority
     @State private var hasDue: Bool
     @State private var due: Date
@@ -18,11 +20,12 @@ struct TaskEditorView: View {
     /// Rozwinięty panel daty (kalendarz albo koło godzin) — najwyżej jeden, w treści formularza.
     @State private var panels = EditorPanels()
 
-    init(task: TodoTask?, onSave: @escaping Save) {
+    init(task: TodoTask?, note: String = "", onSave: @escaping Save) {
         self.task = task
         self.onSave = onSave
         let nextHour = Calendar.current.date(byAdding: .hour, value: 1, to: .now) ?? .now
         _title = State(initialValue: task?.title ?? "")
+        _note = State(initialValue: note)
         _priority = State(initialValue: task?.priority ?? .normal)
         _hasDue = State(initialValue: task?.dueAt != nil)
         _due = State(initialValue: task?.dueAt ?? nextHour)
@@ -31,6 +34,7 @@ struct TaskEditorView: View {
     }
 
     private var titleBytes: Int { title.trimmingCharacters(in: .whitespacesAndNewlines).utf8.count }
+    private var noteBytes: Int { note.trimmingCharacters(in: .whitespacesAndNewlines).utf8.count }
 
     var body: some View {
         NavigationStack {
@@ -41,6 +45,21 @@ struct TaskEditorView: View {
                 } footer: {
                     if titleBytes > TaskLimits.maxTitleBytes {
                         Text("Za długi tytuł (\(titleBytes)/\(TaskLimits.maxTitleBytes) bajtów).").foregroundStyle(Theme.danger)
+                    }
+                }
+                .surfaceRow()
+                Section {
+                    // Dłuższy tekst przewija się wewnątrz pola (maks. 10 widocznych wierszy).
+                    TextField("Notatka (opcjonalnie)", text: $note, axis: .vertical)
+                        .lineLimit(3...10)
+                        .foregroundStyle(Theme.ink)
+                } header: {
+                    SectionHeader("Notatka")
+                } footer: {
+                    if noteBytes > TaskLimits.maxNoteBytes {
+                        Text("Za długa notatka (\(noteBytes)/\(TaskLimits.maxNoteBytes) bajtów).").foregroundStyle(Theme.danger)
+                    } else {
+                        Text("Notatka jest widoczna tylko na tym telefonie.").foregroundStyle(Theme.inkSecondary)
                     }
                 }
                 .surfaceRow()
@@ -94,9 +113,9 @@ struct TaskEditorView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Anuluj") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Zapisz") {
-                        if onSave(title, priority, hasDue ? due : nil, hasReminder ? reminder : nil) { dismiss() }
+                        if onSave(title, note, priority, hasDue ? due : nil, hasReminder ? reminder : nil) { dismiss() }
                     }
-                    .disabled(titleBytes == 0 || titleBytes > TaskLimits.maxTitleBytes)
+                    .disabled(titleBytes == 0 || titleBytes > TaskLimits.maxTitleBytes || noteBytes > TaskLimits.maxNoteBytes)
                 }
             }
         }

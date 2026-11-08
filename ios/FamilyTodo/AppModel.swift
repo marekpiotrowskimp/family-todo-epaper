@@ -15,6 +15,8 @@ final class AppModel {
     private(set) var tasks: [TodoTask] = []
     /// Wykonane zadania z czasem wykonania, od najnowszego.
     private(set) var history: [HistoryEntry] = []
+    /// Zadania z notatką (tylko w tym telefonie) — do ikony na liście i w historii.
+    private(set) var notedIDs: Set<String> = []
     private(set) var isBusy = false
     private(set) var pendingCount = 0
     var message: String?
@@ -49,6 +51,7 @@ final class AppModel {
         self.repository = repository
         tasks = repository.activeTasks
         history = repository.history
+        notedIDs = Self.notedIDs(in: repository)
     }
 
     // MARK: - Konfiguracja
@@ -125,13 +128,39 @@ final class AppModel {
 
     // MARK: - Zadania
 
-    func create(title: String, priority: Priority, dueAt: Date?, reminderAt: Date?) -> Bool {
-        perform { try $0.create(title: title, priority: priority, dueAt: dueAt, reminderAt: reminderAt) }
+    func create(title: String, note: String, priority: Priority, dueAt: Date?, reminderAt: Date?) -> Bool {
+        perform { try $0.create(title: title, note: note, priority: priority, dueAt: dueAt, reminderAt: reminderAt) }
     }
 
     /// Zapis formularza: tylko pola edytowane, status i usunięcie zostają z bieżącej wersji.
-    func save(_ draft: TaskDraft, for id: String) -> Bool {
-        perform { try $0.update(id: id) { draft.apply(to: &$0) } }
+    /// Notatka jest zapisywana najpierw, bo za długa nie powinna zostawić zapisanych pozostałych pól.
+    /// Gdy zmieniła się tylko notatka, zadanie nie dostaje nowej wersji i nie jest synchronizowane
+    /// (notatka zostaje w telefonie).
+    func save(_ draft: TaskDraft, note: String, for id: String) -> Bool {
+        if let current = repository?.task(id: id), TaskDraft(current) == Self.normalized(draft) {
+            return perform(syncs: false) { try $0.setNote(id: id, note) }
+        }
+        return perform {
+            try $0.setNote(id: id, note)
+            try $0.update(id: id) { draft.apply(to: &$0) }
+        }
+    }
+
+    /// Tytuł tak, jak zapisuje go repozytorium (bez białych znaków na brzegach), żeby porównanie
+    /// z bieżącą wersją nie uznało samych spacji za zmianę.
+    private static func normalized(_ draft: TaskDraft) -> TaskDraft {
+        var draft = draft
+        draft.title = draft.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        return draft
+    }
+
+    /// Notatka zadania z tego telefonu ("" gdy brak).
+    func note(for task: TodoTask) -> String {
+        repository?.note(id: task.id) ?? ""
+    }
+
+    func hasNote(_ task: TodoTask) -> Bool {
+        notedIDs.contains(task.id)
     }
 
     func complete(_ task: TodoTask) {
@@ -224,16 +253,20 @@ final class AppModel {
         Task { await refresh() }
     }
 
-    private func perform(_ change: (TaskRepository) throws -> Void) -> Bool {
+    /// `syncs: false` — zmiana tylko lokalna (notatka): bez znacznika zmiany i ponownego skanowania.
+    private func perform(syncs: Bool = true, _ change: (TaskRepository) throws -> Void) -> Bool {
         guard let repository else { return false }
         do {
             try change(repository)
         } catch {
             message = Self.describe(error)
+            notedIDs = Self.notedIDs(in: repository)  // część zmian (np. notatka) mogła się już zapisać
             return false
         }
-        lastLocalChange = Date()
-        link.rescan()  // urządzenie w zasięgu zostanie zgłoszone ponownie i dostanie zmianę
+        if syncs {
+            lastLocalChange = Date()
+            link.rescan()  // urządzenie w zasięgu zostanie zgłoszone ponownie i dostanie zmianę
+        }
         Task { await refresh() }
         return true
     }
@@ -242,6 +275,7 @@ final class AppModel {
         guard let repository else { return }
         tasks = repository.activeTasks
         history = repository.history
+        notedIDs = Self.notedIDs(in: repository)
         pendingCount = repository.pendingIDs.count
         await reminders?.reconcile(repository.allTasks)
         if reminders?.lastError != nil {
@@ -257,6 +291,10 @@ final class AppModel {
         }
     }
 
+    private static func notedIDs(in repository: TaskRepository) -> Set<String> {
+        Set(repository.allTasks.lazy.map(\.id).filter { !repository.note(id: $0).isEmpty })
+    }
+
     private static func storageURL() -> URL {
         URL.applicationSupportDirectory.appending(path: "tasks.json")
     }
@@ -265,6 +303,7 @@ final class AppModel {
         switch error {
         case TaskValidationError.emptyTitle: return String(localized: "Tytuł nie może być pusty.")
         case TaskValidationError.titleTooLong: return String(localized: "Tytuł jest za długi (maks. \(TaskLimits.maxTitleBytes) bajtów).")
+        case TaskValidationError.noteTooLong: return String(localized: "Notatka jest za długa (maks. \(TaskLimits.maxNoteBytes) bajtów).")
         case TaskValidationError.notFound: return String(localized: "Nie znaleziono zadania.")
         case SyncError.unauthorized: return String(localized: "Wyświetlacz ma inny klucz rodziny niż ta aplikacja.")
         case SyncError.device("bad_frame"): return String(localized: "Zakłócona transmisja. Synchronizacja zostanie ponowiona.")

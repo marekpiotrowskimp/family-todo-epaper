@@ -281,6 +281,16 @@
         }
       }
     },
+    "Ma notatkę" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has a note"
+          }
+        }
+      }
+    },
     "Nie udało się wczytać zadań: %@" : {
       "localizations" : {
         "en" : {
@@ -382,6 +392,46 @@
         }
       },
       "extractionState" : "manual"
+    },
+    "Notatka" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        }
+      }
+    },
+    "Notatka (opcjonalnie)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note (optional)"
+          }
+        }
+      }
+    },
+    "Notatka jest widoczna tylko na tym telefonie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The note is visible only on this phone."
+          }
+        }
+      }
+    },
+    "Notatka jest za długa (maks. %lld bajtów)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The note is too long (max. %lld bytes)."
+          }
+        }
+      }
     },
     "Nowe zadanie" : {
       "localizations" : {
@@ -682,6 +732,16 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "Za długa notatka (%lld/%lld bajtów)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note too long (%1$lld/%2$lld bytes)."
           }
         }
       }

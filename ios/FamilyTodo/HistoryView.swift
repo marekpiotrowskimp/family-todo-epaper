@@ -50,6 +50,7 @@ struct HistoryView: View {
                 HStack(spacing: 8) {
                     Text("Wykonano \(Self.completedLabel(entry.completedAt))")
                     if !model.isMine(entry.task) { Text("od innego domownika") }
+                    if model.hasNote(entry.task) { Image(systemName: "note.text").accessibilityLabel("Ma notatkę") }
                 }
                 .font(.caption)
                 .foregroundStyle(Theme.inkSecondary)

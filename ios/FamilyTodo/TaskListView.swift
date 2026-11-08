@@ -55,13 +55,13 @@ struct TaskListView: View {
             .navigationDestination(isPresented: $showsHistory) { HistoryView(model: model) }
             .sheet(isPresented: $showsSettings) { SettingsView(model: model, showsCode: model.isDemo) }
             .sheet(isPresented: $isAdding) {
-                TaskEditorView(task: nil) { title, priority, due, reminder in
-                    model.create(title: title, priority: priority, dueAt: due, reminderAt: reminder)
+                TaskEditorView(task: nil) { title, note, priority, due, reminder in
+                    model.create(title: title, note: note, priority: priority, dueAt: due, reminderAt: reminder)
                 }
             }
             .sheet(item: $editing) { task in
-                TaskEditorView(task: task) { title, priority, due, reminder in
-                    model.save(TaskDraft(title: title, priority: priority, dueAt: due, reminderAt: reminder), for: task.id)
+                TaskEditorView(task: task, note: model.note(for: task)) { title, note, priority, due, reminder in
+                    model.save(TaskDraft(title: title, priority: priority, dueAt: due, reminderAt: reminder), note: note, for: task.id)
                 }
             }
         }
@@ -92,6 +92,7 @@ struct TaskListView: View {
                         if !model.isMine(task) { Text("od innego domownika") }
                         if let due = task.dueAt { Text(due, format: .dateTime.day().month()) }
                         if task.reminderAt != nil { Image(systemName: "bell").accessibilityLabel("Przypomnienie") }
+                        if model.hasNote(task) { Image(systemName: "note.text").accessibilityLabel("Ma notatkę") }
                     }
                     .font(.caption)
                     .foregroundStyle(Theme.inkSecondary)
