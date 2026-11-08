@@ -22,6 +22,9 @@ Sync works only while the app is open and the display is within Bluetooth range 
 **Reminders do not appear.**
 Allow notifications for the app in iOS Settings → Notifications. Reminders arrive only on the phone of the task's owner.
 
+**My family does not see my note.**
+That is by design: notes are private and stay on the phone where you wrote them. Put anything the whole family should see in the task title.
+
 **How do I remove my data?**
 Delete the app. See the [privacy policy](PRIVACY.md).
 
@@ -42,6 +45,9 @@ Klucz w aplikacji nie pasuje do firmware. Wpisz klucz ponownie (Ustawienia → Z
 
 **Aplikacja się nie synchronizuje.**
 Synchronizacja działa, gdy aplikacja jest otwarta, a wyświetlacz jest w zasięgu Bluetooth (kilka metrów). Sprawdź, czy Bluetooth jest włączony i dozwolony dla aplikacji, i stuknij przycisk synchronizacji.
+
+**Domownicy nie widzą mojej notatki.**
+Tak ma być: notatki są prywatne i zostają na telefonie, na którym je zapisano. To, co ma zobaczyć cała rodzina, wpisz w tytule zadania.
 
 **Nie przychodzą przypomnienia.**
 Zezwól na powiadomienia w Ustawieniach iOS. Przypomnienie przychodzi tylko na telefon właściciela zadania.

@@ -7,6 +7,7 @@
 #
 # Usage: release_apple_store/make_screenshots.sh ["iPhone 17 Pro Max" | "iPhone 17 Pro"]
 # Requires: Xcode, a simulator with that name, include/family_key.h is NOT needed.
+# Check the results: a screenshot taken before the app appeared shows the home screen.
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -41,10 +42,15 @@ for lang in pl en; do
   mkdir -p "$OUT/$lang"
   n=1
   for screen in $SCREENS; do
-    xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
-    xcrun simctl launch "$UDID" "$BUNDLE" -demoScreen "$screen" \
-      -AppleLanguages "($lang)" -AppleLocale "$locale" >/dev/null
-    sleep 4
+    # Launch can be slow right after a language change; retry until the app is running.
+    for attempt in 1 2 3; do
+      xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
+      xcrun simctl launch "$UDID" "$BUNDLE" -demoScreen "$screen" \
+        -AppleLanguages "($lang)" -AppleLocale "$locale" >/dev/null
+      sleep 6
+      xcrun simctl spawn "$UDID" launchctl list | grep -q "UIKitApplication:$BUNDLE" && break
+      echo "  $lang/$screen: app not running, retrying ($attempt)" >&2
+    done
     file="$OUT/$lang/0${n}_${screen}.png"
     xcrun simctl io "$UDID" screenshot --type=png "$file" >/dev/null 2>&1
     echo "$file"

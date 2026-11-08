@@ -36,8 +36,11 @@ enum DemoData {
 
         let mine = try! TaskRepository(userId: "demo-anna", storage: storage, now: now)
         clock = day(0, 8)
-        _ = try! mine.create(title: text[3], priority: .high, dueAt: day(1, 9), reminderAt: day(1, 7, 30))
-        _ = try! mine.create(title: text[4], priority: .normal, dueAt: day(0, 17), reminderAt: day(0, 16, 30))
+        let notes = english ? englishNotes : polishNotes
+        _ = try! mine.create(
+            title: text[3], note: notes[0], priority: .high, dueAt: day(1, 9), reminderAt: day(1, 7, 30))
+        _ = try! mine.create(
+            title: text[4], note: notes[1], priority: .normal, dueAt: day(0, 17), reminderAt: day(0, 16, 30))
         _ = try! mine.create(title: text[5], priority: .normal, dueAt: nil, reminderAt: nil)
         _ = try! mine.create(title: text[6], priority: .low, dueAt: day(5, 12), reminderAt: nil)
         _ = try! mine.create(title: text[7], priority: .low, dueAt: nil, reminderAt: nil)
@@ -63,6 +66,15 @@ enum DemoData {
         "Zawieźć Zosię na basen", "Kupić mleko i chleb", "Zadzwonić do babci",
         "Umyć okna", "Wymienić żarówkę w przedpokoju",
         "Zapłacić rachunek za prąd", "Pranie", "Odkurzyć samochód",
+    ]
+    /// Notatki (tylko w telefonie): do zadania w edytorze i do jednego zadania na liście.
+    static let polishNotes = [
+        "Strój, czepek, ręcznik i klapki.\nTrening 8:00–9:00, odbiór przy wejściu B.",
+        "Mleko 2%, chleb razowy.",
+    ]
+    static let englishNotes = [
+        "Swimsuit, cap, towel and flip-flops.\nPractice 8–9 am, pick-up at entrance B.",
+        "2% milk, wholegrain bread.",
     ]
     static let englishTitles = [
         "Take out the trash", "Pick up the parcel", "Water the plants",

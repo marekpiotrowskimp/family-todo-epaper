@@ -14,6 +14,7 @@ Requirements (in Polish): [`specyfikacja_systemu_todo.md`](specyfikacja_systemu_
 | iOS | completed tasks move to a History screen showing the local completion time; day and time are edited in inline panels |
 | iOS | family key entered in the app (QR code / link / paste), kept in the Keychain — one App Store build works with any display; Polish and English UI |
 | iOS | local reminders at the set time, even without a connection to the display (only on the task owner's phone) |
+| iOS | private notes on any task (up to 2048 B UTF-8, ≥ 1024 characters): kept only on the phone that wrote them, never sent to the display or other phones; a note icon marks such tasks |
 | iOS ↔ ESP32 | no pairing: the open app discovers the display within BLE range and syncs on its own (short connection, send own changes, fetch others', disconnect); the "Sync" button forces it immediately |
 | ESP32 | persistent task list (LittleFS) that survives restarts; merging changes from multiple phones (LWW) |
 | e-paper | up to 9 tasks, no header: priority ↓, due date ↑; **every person with an active task gets at least one row**; with more than 9 people, pages rotate every 5 min |
@@ -60,7 +61,7 @@ src/                  firmware: main (loop), ble/gatt (GATT server), storage/fla
                       BLE frames, SyncSession (protocol), RefreshScheduler
 ```
 
-Task model: `id, ownerId, title (≤120 B UTF-8), priority (0..2), dueAt?, status, reminderAt?, createdAt, updatedAt, updatedBy, deleted`. Times are in ms since the Unix epoch.
+Task model: `id, ownerId, title (≤120 B UTF-8), priority (0..2), dueAt?, status, reminderAt?, createdAt, updatedAt, updatedBy, deleted`. Times are in ms since the Unix epoch. Notes are not part of the task model: the app keeps them in its own `tasks.json` next to the tasks.
 
 ### Merging
 - The version with the newer `updatedAt` wins. On a tie the larger `updatedBy` wins, so every device reaches the same result.

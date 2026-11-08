@@ -1,6 +1,6 @@
 # Privacy Policy — Family To-Do for E-Paper
 
-*Effective: 5 November 2026 · [Polska wersja poniżej](#polityka-prywatności)*
+*Effective: 8 November 2026 · [Polska wersja poniżej](#polityka-prywatności)*
 
 Family To-Do for E-Paper ("the app") is developed by Marek Piotrowski as an open-source project.
 
@@ -13,6 +13,7 @@ Family To-Do for E-Paper ("the app") is developed by Marek Piotrowski as an open
 | Data | Where it is stored | Leaves your phone? |
 |---|---|---|
 | Tasks (title, priority, due date, reminder, completion time) | On your iPhone (app storage) | Only to **your own** e-paper display, over Bluetooth Low Energy, when it is in range |
+| Notes on tasks | On your iPhone (app storage) | No — notes are never sent to the display or to other phones |
 | Your display name | On your iPhone | Only to your own display, so it can show whose task it is |
 | Family key | iPhone Keychain (this device only, not in iCloud) | Never transmitted; it is used to sign the connection to the display |
 | Reminders | Local notifications scheduled on your iPhone | No |
@@ -31,7 +32,7 @@ The app is not directed at children and does not knowingly collect data from any
 
 ## Deleting your data
 
-Delete the app to remove all tasks, your name and the family key from the phone. Data on the display is removed by reflashing or erasing it.
+Delete the app to remove all tasks, notes, your name and the family key from the phone. Data on the display is removed by reflashing or erasing it.
 
 ## Changes and contact
 
@@ -42,7 +43,7 @@ Questions: [open an issue](https://github.com/marekpiotrowskimp/family-todo-epap
 
 # Polityka prywatności
 
-*Obowiązuje od: 5 listopada 2026*
+*Obowiązuje od: 8 listopada 2026*
 
 Aplikacja Zadania rodziny na e-papier („aplikacja”) jest otwartym projektem Marka Piotrowskiego.
 
@@ -55,6 +56,7 @@ Aplikacja Zadania rodziny na e-papier („aplikacja”) jest otwartym projektem 
 | Dane | Gdzie | Czy opuszczają telefon? |
 |---|---|---|
 | Zadania (tytuł, priorytet, termin, przypomnienie, czas wykonania) | Na iPhonie (pamięć aplikacji) | Tylko do **Twojego** wyświetlacza e-papierowego, przez Bluetooth Low Energy, gdy jest w zasięgu |
+| Notatki do zadań | Na iPhonie (pamięć aplikacji) | Nie — notatki nigdy nie są wysyłane do wyświetlacza ani na inne telefony |
 | Twoje imię | Na iPhonie | Tylko do Twojego wyświetlacza, żeby pokazać, czyje jest zadanie |
 | Klucz rodziny | Pęk kluczy iPhone'a (tylko to urządzenie, bez iCloud) | Nigdy nie jest wysyłany; służy do podpisania połączenia z wyświetlaczem |
 | Przypomnienia | Lokalne powiadomienia na iPhonie | Nie |
@@ -73,7 +75,7 @@ Aplikacja nie jest skierowana do dzieci i świadomie nie zbiera niczyich danych.
 
 ## Usuwanie danych
 
-Usunięcie aplikacji usuwa z telefonu wszystkie zadania, imię i klucz rodziny. Dane na wyświetlaczu usuwa się, wgrywając firmware ponownie lub kasując pamięć urządzenia.
+Usunięcie aplikacji usuwa z telefonu wszystkie zadania, notatki, imię i klucz rodziny. Dane na wyświetlaczu usuwa się, wgrywając firmware ponownie lub kasując pamięć urządzenia.
 
 ## Zmiany i kontakt
 

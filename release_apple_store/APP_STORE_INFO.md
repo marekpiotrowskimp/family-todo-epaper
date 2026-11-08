@@ -41,6 +41,7 @@ SHARED, BUT SIMPLE
 • Three priorities, shown with the same flag icons on the phone and on the display
 • Due dates and reminders that arrive on your phone even away from home
 • Completed tasks move to a History screen with the time they were done
+• Private notes for the details — a shopping list, an address — kept only on your phone
 
 SYNCS ON ITS OWN
 • Open the app near the display and it syncs over Bluetooth Low Energy — no pairing
@@ -74,6 +75,7 @@ WSPÓLNIE, ALE PROSTO
 • Trzy priorytety z tymi samymi ikonami flag na telefonie i na wyświetlaczu
 • Terminy i przypomnienia, które przychodzą na telefon także poza domem
 • Wykonane zadania trafiają do Historii z godziną wykonania
+• Prywatne notatki ze szczegółami — lista zakupów, adres — zostają tylko na Twoim telefonie
 
 SYNCHRONIZUJE SIĘ SAMA
 • Otwórz aplikację w pobliżu wyświetlacza — zadania przejdą przez Bluetooth Low Energy, bez parowania
@@ -109,8 +111,8 @@ Dostępna po polsku i po angielsku.
 
 ## 5. What's New (1.0)
 
-- **EN:** `First release: shared family tasks with priorities, due dates and reminders, task history, Bluetooth sync with the e-paper display, family key via QR code. English and Polish.`
-- **PL:** `Pierwsze wydanie: wspólne zadania rodziny z priorytetami, terminami i przypomnieniami, historia zadań, synchronizacja z wyświetlaczem e-papierowym przez Bluetooth, klucz rodziny przez kod QR. Po polsku i po angielsku.`
+- **EN:** `First release: shared family tasks with priorities, due dates and reminders, private notes, task history, Bluetooth sync with the e-paper display, family key via QR code. English and Polish.`
+- **PL:** `Pierwsze wydanie: wspólne zadania rodziny z priorytetami, terminami i przypomnieniami, prywatne notatki, historia zadań, synchronizacja z wyświetlaczem e-papierowym przez Bluetooth, klucz rodziny przez kod QR. Po polsku i po angielsku.`
 
 ---
 
@@ -139,8 +141,8 @@ Upload `<size>/en/` to **English (U.S.)** and `<size>/pl/` to **Polish**, in fil
 
 | # | File | Shows | Optional caption EN / PL |
 |---|---|---|---|
-| 1 | `01_list.png` | Task list with priorities, due dates, reminders | Your family's tasks at a glance / Zadania całej rodziny w jednym miejscu |
-| 2 | `02_editor.png` | Editing a task: priority, due date, reminder | Due dates and reminders / Terminy i przypomnienia |
+| 1 | `01_list.png` | Task list with priorities, due dates, reminders, note icon | Your family's tasks at a glance / Zadania całej rodziny w jednym miejscu |
+| 2 | `02_editor.png` | Editing a task: note, priority, due date, reminder | Notes, due dates and reminders / Notatki, terminy i przypomnienia |
 | 3 | `03_history.png` | History of completed tasks | See what got done / Zobacz, co już zrobione |
 | 4 | `04_settings.png` | Family key QR code for a family member | Share the key with a QR code / Przekaż klucz kodem QR |
 | 5 | `05_setup.png` | First launch: name and family key | Set up in seconds / Gotowe w kilka sekund |
@@ -156,7 +158,7 @@ Recommended addition: a photo of the real display as the first screenshot (cropp
 | Do you or your third-party partners collect data from this app? | **No, we do not collect data from this app** |
 | Tracking | No |
 
-Reasoning: tasks, names and the family key never leave the user's devices (iPhone ↔ display over local BLE). No analytics, no crash reporting SDK, no network requests.
+Reasoning: tasks, names and the family key never leave the user's devices, and notes never leave the phone (iPhone ↔ display over local BLE). No analytics, no crash reporting SDK, no network requests.
 
 ## 9. Age rating
 
@@ -170,36 +172,9 @@ All content questions: **None / No** (no user-generated content shared publicly,
 
 ## 11. App Review information
 
-| Field | Value |
-|---|---|
-| Sign-in required | No |
-| Contact | Marek Piotrowski · e-mail · phone (fill in App Store Connect) |
-| Attachment | **Demo video** of the app syncing with the display (record before submitting — see below) |
+Notes for the reviewer, contact fields and the attachment: **[`REVIEW_NOTES.md`](REVIEW_NOTES.md)**.
 
-### Notes for the reviewer (paste as is)
-
-```
-Family To-Do is the companion app for an open-source DIY e-paper display (ESP32-S3), documented at https://github.com/marekpiotrowskimp/family-todo-epaper. The hardware is not sold; users build it themselves.
-
-The app is fully usable without the hardware:
-1. Launch the app, enter any name, leave "Family key" empty and tap Continue.
-2. Add tasks with +, set priority, due date and a reminder; swipe right to mark done, left to delete.
-3. Completed tasks appear under History (clock icon).
-
-To see the family-key flow, paste this test key on the Welcome screen or in Settings (gear icon):
-familytodo://key?k=659bff0319594c91a0e038aee876c2559a19c62eac3eafa2276b0f2cc1ae0464
-Settings then shows the key as a QR code that a family member scans with the Camera app.
-
-Sync with the display uses Bluetooth Low Energy only when the display is in range; without it, tapping Sync shows "Cannot connect to the display". The attached video shows syncing with a real display.
-
-No account, no server, no data collection. Bluetooth is used only to talk to the user's own display.
-```
-
-The test key above is not used by any real display (it is safe to publish).
-
-### Demo video (to record)
-
-30–60 s, portrait, from a second phone/camera: open the app next to the display → add a task → display refreshes with the new task → mark it done → task disappears from the display. Upload as App Review attachment.
+Demo video with the real display (unlisted YouTube link in the notes): record the shots from [`review_video/SHOT_LIST.md`](review_video/SHOT_LIST.md), build it with `review_video/make_review_video.sh`, upload with the texts from [`review_video/YOUTUBE.md`](review_video/YOUTUBE.md).
 
 ---
 
@@ -216,5 +191,5 @@ The test key above is not used by any real display (it is safe to publish).
      -destination 'generic/platform=iOS' -archivePath build/FamilyTodo.xcarchive -allowProvisioningUpdates archive
    open build/FamilyTodo.xcarchive   # Xcode Organizer → Distribute App → App Store Connect
    ```
-7. [ ] Record and attach the demo video (section 11).
+7. [ ] Record the demo video, upload it to YouTube as Unlisted and put the link in the review notes (section 11).
 8. [ ] Select the build, **Add for Review**, submit.
