@@ -19,12 +19,19 @@ public struct RepositorySnapshot: Codable, Equatable, Sendable {
     /// Czas wykonania zadań (id -> data), tylko lokalnie w telefonie; nie trafia do protokołu.
     /// Brak klucza w starszych plikach = pusty słownik.
     public var completedAt: [String: Date]?
+    /// Notatki zadań (id -> tekst), tylko lokalnie w telefonie; nie trafiają do protokołu.
+    /// Brak klucza w starszych plikach = brak notatek.
+    public var notes: [String: String]?
 
-    public init(tasks: [TodoTask], pendingIDs: [String], cursor: SyncCursor?, completedAt: [String: Date]? = nil) {
+    public init(
+        tasks: [TodoTask], pendingIDs: [String], cursor: SyncCursor?, completedAt: [String: Date]? = nil,
+        notes: [String: String]? = nil
+    ) {
         self.tasks = tasks
         self.pendingIDs = pendingIDs
         self.cursor = cursor
         self.completedAt = completedAt
+        self.notes = notes
     }
 }
 
@@ -85,6 +92,8 @@ public final class TaskRepository {
 
     /// Czas wykonania ukończonych zadań; tylko w telefonie, poza protokołem.
     private var completions: [String: Date] = [:]
+    /// Notatki zadań; tylko w telefonie, poza protokołem. Puste notatki nie są przechowywane.
+    private var notes: [String: String] = [:]
     private let storage: TaskStorage
     private let now: () -> Date
     private let makeID: () -> String
@@ -104,6 +113,7 @@ public final class TaskRepository {
             pendingIDs = Set(snapshot.pendingIDs)
             syncCursor = snapshot.cursor
             completions = snapshot.completedAt ?? [:]
+            notes = snapshot.notes ?? [:]
         }
     }
 
@@ -137,6 +147,20 @@ public final class TaskRepository {
         return completions[id] ?? task.updatedAt
     }
 
+    /// Notatka zadania; "" gdy brak. Tylko w telefonie — nie trafia do protokołu.
+    public func note(id: String) -> String {
+        notes[id] ?? ""
+    }
+
+    /// Ustawia notatkę bez zmiany wersji zadania (nic nie trafia na urządzenie). Działa też dla
+    /// cudzych zadań. Pusta po normalizacji usuwa notatkę; > 2048 bajtów UTF-8 -> `.noteTooLong`.
+    public func setNote(id: String, _ text: String) throws {
+        guard index(of: id) != nil else { throw TaskValidationError.notFound }
+        let note = try Self.validatedNote(text)
+        notes[id] = note.isEmpty ? nil : note
+        try save()
+    }
+
     public func task(id: String) -> TodoTask? {
         allTasks.first { $0.id == id }
     }
@@ -145,11 +169,13 @@ public final class TaskRepository {
     @discardableResult
     public func create(
         title: String,
+        note: String = "",
         priority: Priority = .normal,
         dueAt: Date? = nil,
         reminderAt: Date? = nil
     ) throws -> TodoTask {
         let title = try Self.validatedTitle(title)
+        let note = try Self.validatedNote(note)
         let timestamp = WireTime.wholeMilliseconds(now())
         let task = TodoTask(
             id: makeID(), ownerId: userId, title: title, priority: priority, dueAt: dueAt.map(WireTime.wholeMilliseconds),
@@ -157,6 +183,7 @@ public final class TaskRepository {
             updatedBy: userId)
         allTasks.append(task)
         pendingIDs.insert(task.id)
+        if !note.isEmpty { notes[task.id] = note }
         try save()
         return task
     }
@@ -190,6 +217,7 @@ public final class TaskRepository {
         guard !allTasks[index].deleted else { return }
         var task = allTasks[index]
         task.deleted = true
+        notes[id] = nil
         try commit(task, at: index)
     }
 
@@ -202,6 +230,7 @@ public final class TaskRepository {
             if let index = index(of: remote.id) {
                 guard LWW.wins(remote, over: allTasks[index]) else { continue }
                 recordCompletion(of: remote, replacing: allTasks[index])
+                if remote.deleted { notes[remote.id] = nil }
                 allTasks[index] = remote
                 pendingIDs.remove(remote.id)  // lokalna wersja została wyparta, nie ma czego wysyłać
             } else {
@@ -239,6 +268,16 @@ public final class TaskRepository {
         return trimmed
     }
 
+    /// Końce wierszy ujednolicone do `\n`, białe znaki na brzegach obcięte.
+    private static func validatedNote(_ note: String) throws -> String {
+        let normalized = note
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if normalized.utf8.count > TaskLimits.maxNoteBytes { throw TaskValidationError.noteTooLong }
+        return normalized
+    }
+
     private func index(of id: String) -> Int? {
         allTasks.firstIndex { $0.id == id }
     }
@@ -273,7 +312,8 @@ public final class TaskRepository {
 
     private func save() throws {
         try storage.save(RepositorySnapshot(
-            tasks: allTasks, pendingIDs: pendingIDs.sorted(), cursor: syncCursor, completedAt: completions))
+            tasks: allTasks, pendingIDs: pendingIDs.sorted(), cursor: syncCursor, completedAt: completions,
+            notes: notes))
         lastSaveError = nil
     }
 

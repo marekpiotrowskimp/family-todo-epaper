@@ -57,10 +57,13 @@ public struct TodoTask: Hashable, Codable, Sendable {
 public enum TaskLimits {
     /// Ta sama granica co `kMaxTitleBytes` w firmware.
     public static let maxTitleBytes = 120
+    /// Notatka (tylko w telefonie, nie trafia do protokołu): min. 1024 znaki także po polsku.
+    public static let maxNoteBytes = 2048
 }
 
 public enum TaskValidationError: Error, Equatable {
     case emptyTitle
     case titleTooLong
+    case noteTooLong
     case notFound
 }
