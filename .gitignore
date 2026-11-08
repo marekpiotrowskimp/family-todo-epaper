@@ -17,3 +17,9 @@ ios/TodoCore/.build/
 # Xcode per-user state
 xcuserdata/
 ios/TodoCore/.swiftpm/
+
+# App Review demo video: raw clips show the home; the rendered video goes to YouTube
+release_apple_store/review_video/footage/
+release_apple_store/review_video/out/
+# Marketing: optional source photo of the display
+marketing/photos/

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family To-Do article</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; line-height: 1.6; color: #1C1C1E; background: #fff; }
+  .help { background: #F4F1EA; border: 1px solid #E2DACB; border-radius: 8px; padding: 12px 16px; font-size: 14px; margin-bottom: 32px; }
+  .img { background: #FBF1EC; border: 2px dashed #A8482A; border-radius: 6px; padding: 8px 12px; color: #A8482A; font-weight: 600; }
+  .img img { display: block; width: 100%; margin-top: 8px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="help">
+  <b>How to publish:</b><br>
+  1. LinkedIn → Write article → upload <code>00_cover.png</code> as the cover.<br>
+  2. Copy the title below into the Title field.<br>
+  3. Select the text from "Why" down to the hashtags, copy it and paste it into the article body.<br>
+  4. Replace each orange image box with the named image (＋ icon → Image).<br>
+  5. Replace <code>&lt;APP_STORE_LINK&gt;</code> with the App Store link.<br>
+  <code>04_display.png</code> exists only after you add <code>../photos/display.jpg</code> and run <code>../make_graphics.sh</code>; otherwise delete that box.
+</div>
+
+<hr>
+
+<h1>Family To-Do for E-Paper: one task list for the whole family, on a display in the hallway</h1>
+
+<h2>Why</h2>
+<p>Household tasks usually live in a family chat, on a sticky note or in someone's head. I wanted a list that is simply there: visible to everyone on the way out of the house, without unlocking a phone, without notifications and without another glowing screen.</p>
+<p>So I built a small e-paper display that hangs in the hallway and shows the family's tasks, and an iPhone app that feeds it.</p>
+
+<h2>How it works</h2>
+<ul>
+  <li>Everyone at home adds tasks on their own iPhone: title, priority, due date, reminder.</li>
+  <li>When the app is open near the display, it syncs over <b>Bluetooth Low Energy</b>. No pairing, no Wi-Fi, no cloud.</li>
+  <li>The display merges changes from all phones and decides on its own what to show: up to 9 tasks, sorted by priority and due date, and <b>every person with an open task gets at least one row</b>.</li>
+  <li>E-paper keeps the image without power, so the list is readable at a glance like a printed note.</li>
+</ul>
+
+<div class="img">📷 IMAGE: 01_list.png<img src="01_list.png" alt=""></div>
+
+<h2>The app</h2>
+<ul>
+  <li>Add, edit, complete and delete tasks in seconds</li>
+  <li>Three priorities, shown with the same flag icons on the phone and on the display</li>
+  <li>Due dates, and reminders that arrive on your phone even away from home</li>
+  <li>History of completed tasks with the time they were done</li>
+  <li><b>Private notes</b> for the details (a shopping list, an address, a door code). They stay on your phone and are never sent to the display.</li>
+  <li>English and Polish</li>
+</ul>
+
+<div class="img">📷 IMAGE: 02_editor.png<img src="02_editor.png" alt=""></div>
+
+<h2>Private by design</h2>
+<ul>
+  <li>No account, no server, no analytics. Tasks stay on your phones and on your display.</li>
+  <li>Access is protected by a <b>family key</b> that you generate yourself (HMAC-SHA256 with a fresh nonce for every connection).</li>
+  <li>The key is added by scanning a QR code with the iPhone camera, and a family member can show it as a QR code in Settings. It is kept in the Keychain.</li>
+  <li>Without a key the app still works as a task list with reminders on your phone.</li>
+</ul>
+
+<div class="img">📷 IMAGE: 03_settings.png<img src="03_settings.png" alt=""></div>
+
+<h2>The hardware</h2>
+<ul>
+  <li>Seeed Studio XIAO ESP32-S3 with an external 2.4 GHz antenna</li>
+  <li>4.2" black-and-white e-paper panel (400×300 px) with the Seeed ePaper driver board for XIAO</li>
+  <li>3D-printed case and stand (STL and G-code in the repository)</li>
+  <li>Powered over USB-C, no battery</li>
+</ul>
+
+<div class="img">📷 IMAGE: 04_display.png (photo of the real display)<img src="04_display.png" alt=""></div>
+
+<h2>Under the hood</h2>
+<p>For the engineers reading this:</p>
+<ul>
+  <li><b>Firmware:</b> C++17 on PlatformIO. The logic (task store, last-writer-wins merge with tombstones, choosing what fits on the screen, HMAC, the BLE protocol) is a plain library tested on the Mac: 88 unit tests.</li>
+  <li><b>iOS:</b> SwiftUI with a separate Swift package for the logic (sync engine, repository, protocol, reminders): 139 tests. The phone and the firmware share the same JSON test vectors, so both sides agree on the format byte for byte.</li>
+  <li><b>Sync:</b> each change on the display increments a revision; a phone sends its own changes and fetches only what changed since its last cursor. A dropped connection can simply be retried without creating duplicates.</li>
+  <li>App Store screenshots are generated automatically from demo data in two languages.</li>
+</ul>
+
+<h2>Open source</h2>
+<p>Firmware, iOS app, wiring and the 3D-printable case are on GitHub, with a guide for building your own:<br>
+<a href="https://github.com/marekpiotrowskimp/family-todo-epaper">https://github.com/marekpiotrowskimp/family-todo-epaper</a></p>
+<p>The app is free on the App Store for iPhone (iOS 17 or later):<br>
+&lt;APP_STORE_LINK&gt;</p>
+
+<p>#iOS #ESP32 #EPaper #OpenSource #SwiftUI #EmbeddedSystems #MakerProjects</p>
+
+</body>
+</html>
